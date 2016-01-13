@@ -2,7 +2,10 @@
 
 A bitcoind docker image.
 
-[![dockeri.co][dockeri-image]][dockeri-url]
+[![seegno/bitcoind][docker-pulls-image]][docker-hub-url]
+[![seegno/bitcoind][docker-stars-image]][docker-hub-url]
+[![seegno/bitcoind][docker-size-image]][docker-hub-url]
+[![seegno/bitcoind][docker-layers-image]][docker-hub-url]
 
 ## What is bitcoind?
 
@@ -77,5 +80,8 @@ This image is officially supported on docker version 1.7.1, with support for old
 
 [License information](https://github.com/seegno/docker-bitcoind/blob/master/LICENSE) for the `seegno/bitcoind` docker project.
 
-[dockeri-image]: http://dockeri.co/image/seegno/bitcoind
-[dockeri-url]: https://registry.hub.docker.com/u/seegno/bitcoind/
+[docker-hub-url]: https://hub.docker.com/r/seegno/bitcoind
+[docker-layers-image]: https://img.shields.io/imagelayers/layers/seegno/bitcoind/latest.svg
+[docker-pulls-image]: https://img.shields.io/docker/pulls/seegno/bitcoind.svg
+[docker-size-image]: https://img.shields.io/imagelayers/image-size/seegno/bitcoind/latest.svg
+[docker-stars-image]: https://img.shields.io/docker/stars/seegno/bitcoind.svg
