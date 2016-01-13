@@ -18,7 +18,7 @@ RUN gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys \
   0x21F4889F \
   0x98832223
 
-ENV BITCOIND_VERSION 0.11.0
+ENV BITCOIND_VERSION 0.11.1
 
 RUN curl -SLO "https://bitcoin.org/bin/bitcoin-core-${BITCOIND_VERSION}/bitcoin-${BITCOIND_VERSION}-linux64.tar.gz" \
   && curl -SLO "https://bitcoin.org/bin/bitcoin-core-${BITCOIND_VERSION}/SHA256SUMS.asc" \
