@@ -17,23 +17,10 @@ bitcoind is a program that implements the Bitcoin protocol for remote procedure 
 
 ### How to use this image
 
-Create a `Dockerfile` in the root of application directory:
-
-```Dockerfile
-FROM seegno/bitcoind:latest
-```
-
-Then simply run:
-
-```sh
-$ docker build -t bitcoind
-$ docker run --rm -it bitcoind
-```
-
 This image behaves like a binary, so you can pass any arguments to the bitcoind command to start it as needed:
 
 ```sh
-$ docker run --rm -it bitcoin \
+$ docker run --rm -it seegno/bitcoind \
   -datadir=/var/lib/bitcoind \
   -printtoconsole \
   -regtest=1 \
@@ -47,7 +34,7 @@ $ docker run --rm -it bitcoin \
 You can also mount a directory it in a volume under `/var/lib/bitcoind` in case you want to access it on the host:
 
 ```
-$ docker run -v ${PWD}/data:/var/lib/bitcoind -it --rm bitcoin \
+$ docker run -v ${PWD}/data:/var/lib/bitcoind -it --rm seegno/bitcoind \
   -datadir=/var/lib/bitcoind \
   -printtoconsole \
   -regtest=1 \
@@ -56,6 +43,19 @@ $ docker run -v ${PWD}/data:/var/lib/bitcoind -it --rm bitcoin \
   -rpcpassword=bar \
   -rpcuser=foo \
   -server
+```
+
+You can optionally create a `Dockerfile` in the root of your application directory:
+
+```Dockerfile
+FROM seegno/bitcoind:latest
+```
+
+Then simply run:
+
+```sh
+$ docker build -t bitcoind
+$ docker run --rm -it bitcoind <args>
 ```
 
 ## Image Variants
@@ -78,7 +78,7 @@ This image is officially supported on docker version 1.7.1, with support for old
 
 [License information](https://github.com/bitcoin/bitcoin/blob/master/COPYING) for the software contained in this image.
 
-[License information](https://github.com/seegno/docker-bitcoind/blob/master/LICENSE) for the `seegno/bitcoind` docker project.
+[License information](https://github.com/seegno/docker-bitcoind/blob/master/LICENSE) for the [seegno/docker-bitcoind](https://hub.docker.com/r/seegno/bitcoind) docker project.
 
 [docker-hub-url]: https://hub.docker.com/r/seegno/bitcoind
 [docker-layers-image]: https://img.shields.io/imagelayers/layers/seegno/bitcoind/latest.svg
