@@ -7,12 +7,11 @@ RUN apt-get update -y \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN curl -SL https://bitcoin.org/laanwj-releases.asc | gpg --import
-
 ENV BITCOIND_VERSION 0.12.0
 ENV BITCOIND_TEST_VERSION rc5
 
-RUN curl -SLO "https://bitcoin.org/bin/bitcoin-core-${BITCOIND_VERSION}/test/SHA256SUMS.asc" \
+RUN curl -SL https://bitcoin.org/laanwj-releases.asc | gpg --import \
+  && curl -SLO "https://bitcoin.org/bin/bitcoin-core-${BITCOIND_VERSION}/test/SHA256SUMS.asc" \
   && curl -SLO "https://bitcoin.org/bin/bitcoin-core-${BITCOIND_VERSION}/test/bitcoin-${BITCOIND_VERSION}${BITCOIND_TEST_VERSION}-linux64.tar.gz" \
   && gpg --verify SHA256SUMS.asc \
   && grep " bitcoin-${BITCOIND_VERSION}${BITCOIND_TEST_VERSION}-linux64.tar.gz\$" SHA256SUMS.asc | sha256sum -c - \
