@@ -7,6 +7,11 @@ A bitcoind docker image.
 [![seegno/bitcoind][docker-size-image]][docker-hub-url]
 [![seegno/bitcoind][docker-layers-image]][docker-hub-url]
 
+## Supported tags and respective `Dockerfile` links
+
+- `0.11` ([0.11/Dockerfile](https://github.com/seegno/docker-bitcoind/blob/master/0.11/Dockerfile))
+- `0.12` ([0.12/Dockerfile](https://github.com/seegno/docker-bitcoind/blob/master/0.12/Dockerfile))
+
 ## What is bitcoind?
 
 *from [bitcoinwiki](https://en.bitcoin.it/wiki/Bitcoind)*
@@ -58,7 +63,7 @@ $ docker build -t bitcoind
 $ docker run --rm -it bitcoind <args>
 ```
 
-## Image Variants
+## Image variants
 
 The `seegno/bitcoind` image comes in a single flavor:
 
@@ -68,11 +73,11 @@ Tag that points to the latest bitcoind release available.
 
 ### `seegno/bitcoind:<version>`
 
-Based on a slim Debian image, it targets a specific version branch of bitcoind (e.g. 0.11.x).
+Based on a slim Debian image, it targets a specific version branch of bitcoind (e.g. 0.11, 0.12).
 
 ## Supported docker versions
 
-This image is officially supported on docker version 1.7.1, with support for older versions provided on a best-effort basis.
+This image is officially supported on docker version 1.10, with support for older versions provided on a best-effort basis.
 
 ## License
 
