@@ -8,12 +8,14 @@ before_script:
 
 env:
   - VERSION=0.12
+  - VERSION=0.12/alpine
   - VERSION=0.11
+  - VERSION=0.11/alpine
 
 language: bash
 
 script:
   - docker build -t "$image" .
-  - docker run "$image" | grep "v$VERSION"
+  - docker run "$image" --version | grep "Bitcoin Core"
 
 services: docker
