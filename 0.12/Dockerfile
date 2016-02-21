@@ -1,29 +1,43 @@
 FROM debian:latest
 
-MAINTAINER Rui Marinho <rui.marinho@seegno.com>
+MAINTAINER Rui Marinho <rui.marinho@seegno.com> (@ruimarinho)
+
+RUN groupadd -r bitcoin && useradd -r -g bitcoin bitcoin
+
+ENV GOSU_VERSION "1.7"
 
 RUN apt-get update -y \
   && apt-get install -y curl \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-ENV BITCOIND_VERSION 0.12.0
-ENV BITCOIND_TEST_VERSION rc5
+RUN gpg --keyserver pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4
+
+RUN curl -o /usr/local/bin/gosu -fSL "https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-$(dpkg --print-architecture)" \
+	&& curl -o /usr/local/bin/gosu.asc -fSL "https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-$(dpkg --print-architecture).asc" \
+	&& gpg --verify /usr/local/bin/gosu.asc \
+	&& rm /usr/local/bin/gosu.asc \
+	&& chmod +x /usr/local/bin/gosu
+
+ENV BITCOIN_DATA /home/bitcoin/.bitcoin
+ENV BITCOIN_TEST_VERSION rc5
+ENV BITCOIN_VERSION 0.12.0
+ENV PATH /opt/bitcoin-${BITCOIN_VERSION}/bin:$PATH
 
 RUN curl -SL https://bitcoin.org/laanwj-releases.asc | gpg --import \
-  && curl -SLO "https://bitcoin.org/bin/bitcoin-core-${BITCOIND_VERSION}/test/SHA256SUMS.asc" \
-  && curl -SLO "https://bitcoin.org/bin/bitcoin-core-${BITCOIND_VERSION}/test/bitcoin-${BITCOIND_VERSION}${BITCOIND_TEST_VERSION}-linux64.tar.gz" \
+  && curl -SLO "https://bitcoin.org/bin/bitcoin-core-${BITCOIN_VERSION}/test/SHA256SUMS.asc" \
+  && curl -SLO "https://bitcoin.org/bin/bitcoin-core-${BITCOIN_VERSION}/test/bitcoin-${BITCOIN_VERSION}${BITCOIN_TEST_VERSION}-linux64.tar.gz" \
   && gpg --verify SHA256SUMS.asc \
-  && grep " bitcoin-${BITCOIND_VERSION}${BITCOIND_TEST_VERSION}-linux64.tar.gz\$" SHA256SUMS.asc | sha256sum -c - \
-  && tar -xzf "bitcoin-${BITCOIND_VERSION}${BITCOIND_TEST_VERSION}-linux64.tar.gz" -C /opt \
-  && rm "bitcoin-${BITCOIND_VERSION}${BITCOIND_TEST_VERSION}-linux64.tar.gz" SHA256SUMS.asc
+  && grep " bitcoin-${BITCOIN_VERSION}${BITCOIN_TEST_VERSION}-linux64.tar.gz\$" SHA256SUMS.asc | sha256sum -c - \
+  && tar -xzf "bitcoin-${BITCOIN_VERSION}${BITCOIN_TEST_VERSION}-linux64.tar.gz" -C /opt \
+  && rm "bitcoin-${BITCOIN_VERSION}${BITCOIN_TEST_VERSION}-linux64.tar.gz" SHA256SUMS.asc
 
-ENV PATH /opt/bitcoin-${BITCOIND_VERSION}/bin:$PATH
+VOLUME ["/home/bitcoin/.bitcoin"]
 
-VOLUME ["/var/lib/bitcoind"]
+COPY docker-entrypoint.sh /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
 
 EXPOSE 8332 8333 18332 18333 18444
 
-ENTRYPOINT ["bitcoind"]
-
-CMD ["--version"]
+CMD ["bitcoind"]

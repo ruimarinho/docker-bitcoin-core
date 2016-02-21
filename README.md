@@ -1,86 +1,87 @@
 # seegno/bitcoind
-
 A bitcoind docker image.
 
-[![seegno/bitcoind][docker-pulls-image]][docker-hub-url]
-[![seegno/bitcoind][docker-stars-image]][docker-hub-url]
-[![seegno/bitcoind][docker-size-image]][docker-hub-url]
-[![seegno/bitcoind][docker-layers-image]][docker-hub-url]
+[![seegno/bitcoind][docker-pulls-image]][docker-hub-url] [![seegno/bitcoind][docker-stars-image]][docker-hub-url] [![seegno/bitcoind][docker-size-image]][docker-hub-url] [![seegno/bitcoind][docker-layers-image]][docker-hub-url]
 
 ## Supported tags and respective `Dockerfile` links
-
-- `0.11` ([0.11/Dockerfile](https://github.com/seegno/docker-bitcoind/blob/master/0.11/Dockerfile))
-- `0.12` ([0.12/Dockerfile](https://github.com/seegno/docker-bitcoind/blob/master/0.12/Dockerfile))
+- `0.12.0-alpine`, `0.12-alpine` ([0.12/alpine/Dockerfile](https://github.com/seegno/docker-bitcoind/blob/master/0.12/alpine/Dockerfile))
+- `0.12.0rc5`, `0.12`, `latest` ([0.12/Dockerfile](https://github.com/seegno/docker-bitcoind/blob/master/0.12/Dockerfile))
+- `0.11-alpine` ([0.11/alpine/Dockerfile](https://github.com/seegno/docker-bitcoind/blob/master/0.11/alpine/Dockerfile))
+- `0.11.2`, `0.11` ([0.11/Dockerfile](https://github.com/seegno/docker-bitcoind/blob/master/0.11/Dockerfile))
 
 ## What is bitcoind?
-
-*from [bitcoinwiki](https://en.bitcoin.it/wiki/Bitcoind)*
+_from [bitcoinwiki](https://en.bitcoin.it/wiki/Bitcoind)_
 
 bitcoind is a program that implements the Bitcoin protocol for remote procedure call (RPC) use. It is also the second Bitcoin client in the network's history.
 
 ## Usage
-
 ### How to use this image
-
-This image behaves like a binary, so you can pass any arguments to the bitcoind command to start it as needed:
+This image contains the main binaries from the Bitcoin Core project - `bitcoind`, `bitcoin-cli` and `bitcoin-tx`. It behaves like a binary, so you can pass any arguments to the image and they will be forwarded to the `bitcoind` binary:
 
 ```sh
 $ docker run --rm -it seegno/bitcoind \
-  -datadir=/var/lib/bitcoind \
   -printtoconsole \
   -regtest=1 \
-  -rest \
   -rpcallowip=172.17.0.0/16 \
   -rpcpassword=bar \
-  -rpcuser=foo \
-  -server
+  -rpcuser=foo
 ```
 
-You can also mount a directory it in a volume under `/var/lib/bitcoind` in case you want to access it on the host:
+By default, `bitcoind` will run as as user `bitcoin` for security reasons and with its default data dir (`~/.bitcoin`). If you'd like to customize where `bitcoind` stores its data, you must use the `BITCOIN_DATA` environment variable. The directory will be automatically created with the correct permissions for the `bitcoin` user and `bitcoind` automatically configured to use it.
 
-```
-$ docker run -v ${PWD}/data:/var/lib/bitcoind -it --rm seegno/bitcoind \
-  -datadir=/var/lib/bitcoind \
+```sh
+$ docker run --env BITCOIN_DATA=/var/lib/bitcoind --rm -it seegno/bitcoind \
   -printtoconsole \
-  -regtest=1 \
-  -rest \
-  -rpcallowip=172.17.0.0/16 \
-  -rpcpassword=bar \
-  -rpcuser=foo \
-  -server
+  -regtest=1
+```
+
+You can also mount a directory it in a volume under `/home/bitcoin/.bitcoin` in case you want to access it on the host:
+
+```sh
+$ docker run -v ${PWD}/data:/home/bitcoin/.bitcoin -it --rm seegno/bitcoind \
+  -printtoconsole \
+  -regtest=1
 ```
 
 You can optionally create a `Dockerfile` in the root of your application directory:
 
 ```Dockerfile
-FROM seegno/bitcoind:latest
+FROM seegno/bitcoind
 ```
 
 Then simply run:
 
 ```sh
-$ docker build -t bitcoind
-$ docker run --rm -it bitcoind <args>
+$ docker build -t my/bitcoind
+$ docker run --rm -it my/bitcoind
+```
+
+Or with `docker-compose`:
+
+```yml
+bitcoind:
+  image: seegno/bitcoind
+  command:
+    -printtoconsole
+    -regtest=1
 ```
 
 ## Image variants
-
-The `seegno/bitcoind` image comes in a single flavor:
+The `seegno/bitcoind` image comes in multiple flavors:
 
 ### `seegno/bitcoind:latest`
-
-Tag that points to the latest bitcoind release available.
+Points to the latest release available of Bitcoin Core. Occasionally pre-release versions will be included.
 
 ### `seegno/bitcoind:<version>`
+Based on a slim Debian image, targets a specific version branch or release of Bitcoin Core (e.g. `0.12.0rc5`, `0.12`).
 
-Based on a slim Debian image, it targets a specific version branch of bitcoind (e.g. 0.11, 0.12).
+### `seegno/bitcoind:<version>-alpine`
+Based on Alpine Linux with Berkeley DB 4.8 (cross-compatible build), targets a specific version branch or release of Bitcoin Core (e.g. `0.12.0rc5`, `0.12`).
 
-## Supported docker versions
-
-This image is officially supported on docker version 1.10, with support for older versions provided on a best-effort basis.
+## Supported Docker versions
+This image is officially supported on Docker version 1.10, with support for older versions provided on a best-effort basis.
 
 ## License
-
 [License information](https://github.com/bitcoin/bitcoin/blob/master/COPYING) for the software contained in this image.
 
 [License information](https://github.com/seegno/docker-bitcoind/blob/master/LICENSE) for the [seegno/docker-bitcoind](https://hub.docker.com/r/seegno/bitcoind) docker project.
