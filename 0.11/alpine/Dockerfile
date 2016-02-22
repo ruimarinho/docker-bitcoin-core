@@ -64,8 +64,8 @@ RUN buildDependencies="autoconf \
     --with-daemon \
   && make install \
   && cd / \
-  && strip "${BITCOIN_PREFIX}/bin/bitcoind" "${BITCOIN_PREFIX}/bin/bitcoin-tx" "${BITCOIN_PREFIX}/bin/bitcoin-cli" \
-  && rm -rf "/tmp/build" \
+  && strip "${BITCOIN_PREFIX}/bin/bitcoin-cli" "${BITCOIN_PREFIX}/bin/bitcoind" "${BITCOIN_PREFIX}/bin/bitcoin-tx" "${BITCOIN_PREFIX}/lib/libbitcoinconsensus.a" "${BITCOIN_PREFIX}/lib/libbitcoinconsensus.so.0.0.0" \
+  && rm -rf "/tmp/build" "${BERKELEYDB_PREFIX}/docs" \
   && apk --no-cache --purge del ${buildDependencies} \
   && apk --no-cache add ${runtimeDependencies}
 
