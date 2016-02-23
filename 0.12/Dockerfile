@@ -20,17 +20,16 @@ RUN curl -o /usr/local/bin/gosu -fSL "https://github.com/tianon/gosu/releases/do
 	&& chmod +x /usr/local/bin/gosu
 
 ENV BITCOIN_DATA /home/bitcoin/.bitcoin
-ENV BITCOIN_TEST_VERSION rc5
 ENV BITCOIN_VERSION 0.12.0
 ENV PATH /opt/bitcoin-${BITCOIN_VERSION}/bin:$PATH
 
 RUN curl -SL https://bitcoin.org/laanwj-releases.asc | gpg --import \
-  && curl -SLO "https://bitcoin.org/bin/bitcoin-core-${BITCOIN_VERSION}/test/SHA256SUMS.asc" \
-  && curl -SLO "https://bitcoin.org/bin/bitcoin-core-${BITCOIN_VERSION}/test/bitcoin-${BITCOIN_VERSION}${BITCOIN_TEST_VERSION}-linux64.tar.gz" \
+  && curl -SLO "https://bitcoin.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS.asc" \
+  && curl -SLO "https://bitcoin.org/bin/bitcoin-core-${BITCOIN_VERSION}/bitcoin-${BITCOIN_VERSION}-linux64.tar.gz" \
   && gpg --verify SHA256SUMS.asc \
-  && grep " bitcoin-${BITCOIN_VERSION}${BITCOIN_TEST_VERSION}-linux64.tar.gz\$" SHA256SUMS.asc | sha256sum -c - \
-  && tar -xzf "bitcoin-${BITCOIN_VERSION}${BITCOIN_TEST_VERSION}-linux64.tar.gz" -C /opt \
-  && rm "bitcoin-${BITCOIN_VERSION}${BITCOIN_TEST_VERSION}-linux64.tar.gz" SHA256SUMS.asc
+  && grep " bitcoin-${BITCOIN_VERSION}-linux64.tar.gz\$" SHA256SUMS.asc | sha256sum -c - \
+  && tar -xzf "bitcoin-${BITCOIN_VERSION}-linux64.tar.gz" -C /opt \
+  && rm "bitcoin-${BITCOIN_VERSION}-linux64.tar.gz" SHA256SUMS.asc
 
 VOLUME ["/home/bitcoin/.bitcoin"]
 
