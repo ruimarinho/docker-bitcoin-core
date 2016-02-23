@@ -22,22 +22,17 @@ ENV BITCOIN_SHASUM "aab2cd0c4f045970d259cf9fcee5785b43180d20ccbbedc1f90480e69769
 ENV BITCOIN_DATA "/home/bitcoin/.bitcoin"
 ENV PATH "${BITCOIN_PREFIX}/bin:$PATH"
 
-RUN buildDependencies="autoconf \
-    automake \
-    boost-dev \
-    build-base \
-    chrpath \
-    libevent-dev \
-    libtool \
-    linux-headers \
-    openssl-dev \
-    protobuf-dev \
-    zeromq-dev" \
-  runtimeDependencies="boost \
-    boost-program_options \
-    libevent \
-    libzmq" \
-  && apk --no-cache add ${buildDependencies} \
+RUN apk --no-cache --virtual build-dependendencies add autoconf \
+      automake \
+      boost-dev \
+      build-base \
+      chrpath \
+      libevent-dev \
+      libtool \
+      linux-headers \
+      openssl-dev \
+      protobuf-dev \
+      zeromq-dev \
   && mkdir -p /tmp/build \
   && wget -O /tmp/build/${BERKELEYDB_VERSION}.tar.gz "http://download.oracle.com/berkeley-db/${BERKELEYDB_VERSION}.tar.gz" \
   && tar -xzf "/tmp/build/${BERKELEYDB_VERSION}.tar.gz" -C /tmp/build/ \
@@ -66,8 +61,11 @@ RUN buildDependencies="autoconf \
   && cd / \
   && strip "${BITCOIN_PREFIX}/bin/bitcoin-cli" "${BITCOIN_PREFIX}/bin/bitcoind" "${BITCOIN_PREFIX}/bin/bitcoin-tx" "${BITCOIN_PREFIX}/lib/libbitcoinconsensus.a" "${BITCOIN_PREFIX}/lib/libbitcoinconsensus.so.0.0.0" \
   && rm -rf "/tmp/build" "${BERKELEYDB_PREFIX}/docs" \
-  && apk --no-cache --purge del ${buildDependencies} \
-  && apk --no-cache add ${runtimeDependencies}
+  && apk --no-cache --purge del build-dependendencies \
+  && apk --no-cache add boost \
+    boost-program_options \
+    libevent \
+    libzmq
 
 VOLUME ["/home/bitcoin/.bitcoin"]
 
