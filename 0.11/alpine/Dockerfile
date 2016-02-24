@@ -10,7 +10,7 @@ ENV GOSU_VERSION "1.7"
 ENV GOSU_SHASUM "34049cfc713e8b74b90d6de49690fa601dc040021980812b2f1f691534be8a50  /usr/local/bin/gosu"
 
 RUN apk --no-cache add openssl \
-  && wget -O /usr/local/bin/gosu https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-amd64 \
+  && wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-amd64" \
   && echo "${GOSU_SHASUM}" | sha256sum -c \
   && chmod +x /usr/local/bin/gosu
 
