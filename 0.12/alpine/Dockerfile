@@ -10,7 +10,7 @@ ENV GOSU_VERSION "1.7"
 ENV GOSU_SHASUM "34049cfc713e8b74b90d6de49690fa601dc040021980812b2f1f691534be8a50  /usr/local/bin/gosu"
 
 RUN apk --no-cache add openssl \
-  && wget -O /usr/local/bin/gosu https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-amd64 \
+  && wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-amd64" \
   && echo "${GOSU_SHASUM}" | sha256sum -c \
   && chmod +x /usr/local/bin/gosu
 
@@ -18,7 +18,7 @@ ENV BERKELEYDB_VERSION "db-4.8.30.NC"
 ENV BERKELEYDB_PREFIX "/opt/${BERKELEYDB_VERSION}"
 ENV BITCOIN_VERSION "0.12.0"
 ENV BITCOIN_PREFIX "/opt/bitcoin-${BITCOIN_VERSION}"
-ENV BITCOIN_SHASUM "92b1b6e1f49e74c914ff3dd43e97bb1859bcd3239310b5fe54db326aba1fd0a5  v0.12.0.tar.gz"
+ENV BITCOIN_SHASUM "92b1b6e1f49e74c914ff3dd43e97bb1859bcd3239310b5fe54db326aba1fd0a5  v${BITCOIN_VERSION}.tar.gz"
 ENV BITCOIN_DATA "/home/bitcoin/.bitcoin"
 ENV PATH "${BITCOIN_PREFIX}/bin:$PATH"
 
