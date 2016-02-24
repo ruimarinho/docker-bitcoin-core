@@ -16,28 +16,23 @@ RUN apk --no-cache add openssl \
 
 ENV BERKELEYDB_VERSION "db-4.8.30.NC"
 ENV BERKELEYDB_PREFIX "/opt/${BERKELEYDB_VERSION}"
-ENV BITCOIN_VERSION "0.12.0rc5"
+ENV BITCOIN_VERSION "0.12.0"
 ENV BITCOIN_PREFIX "/opt/bitcoin-${BITCOIN_VERSION}"
-ENV BITCOIN_SHASUM "205a5dfa9b56412970eee152147eb3641fd4a01f4b668eb9c47344b7e03bd67c  v0.12.0rc5.tar.gz"
+ENV BITCOIN_SHASUM "92b1b6e1f49e74c914ff3dd43e97bb1859bcd3239310b5fe54db326aba1fd0a5  v0.12.0.tar.gz"
 ENV BITCOIN_DATA "/home/bitcoin/.bitcoin"
 ENV PATH "${BITCOIN_PREFIX}/bin:$PATH"
 
-RUN buildDependencies="autoconf \
-    automake \
-    boost-dev \
-    build-base \
-    chrpath \
-    libevent-dev \
-    libtool \
-    linux-headers \
-    openssl-dev \
-    protobuf-dev \
-    zeromq-dev" \
-  runtimeDependencies="boost \
-    boost-program_options \
-    libevent \
-    libzmq" \
-  && apk --no-cache add ${buildDependencies} \
+RUN apk --no-cache --virtual build-dependendencies add autoconf \
+      automake \
+      boost-dev \
+      build-base \
+      chrpath \
+      libevent-dev \
+      libtool \
+      linux-headers \
+      openssl-dev \
+      protobuf-dev \
+      zeromq-dev \
   && mkdir -p /tmp/build \
   && wget -O /tmp/build/${BERKELEYDB_VERSION}.tar.gz "http://download.oracle.com/berkeley-db/${BERKELEYDB_VERSION}.tar.gz" \
   && tar -xzf "/tmp/build/${BERKELEYDB_VERSION}.tar.gz" -C /tmp/build/ \
@@ -66,8 +61,11 @@ RUN buildDependencies="autoconf \
   && cd / \
   && strip "${BITCOIN_PREFIX}/bin/bitcoin-cli" "${BITCOIN_PREFIX}/bin/bitcoind" "${BITCOIN_PREFIX}/bin/bitcoin-tx" "${BITCOIN_PREFIX}/lib/libbitcoinconsensus.a" "${BITCOIN_PREFIX}/lib/libbitcoinconsensus.so.0.0.0" \
   && rm -rf "/tmp/build" "${BERKELEYDB_PREFIX}/docs" \
-  && apk --no-cache --purge del ${buildDependencies} \
-  && apk --no-cache add ${runtimeDependencies}
+  && apk --no-cache --purge del build-dependendencies \
+  && apk --no-cache add boost \
+    boost-program_options \
+    libevent \
+    libzmq
 
 VOLUME ["/home/bitcoin/.bitcoin"]
 
