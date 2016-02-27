@@ -43,20 +43,7 @@ $ docker run -v ${PWD}/data:/home/bitcoin/.bitcoin -it --rm seegno/bitcoind \
   -regtest=1
 ```
 
-You can optionally create a `Dockerfile` in the root of your application directory:
-
-```Dockerfile
-FROM seegno/bitcoind
-```
-
-Then simply run:
-
-```sh
-$ docker build -t my/bitcoind
-$ docker run --rm -it my/bitcoind
-```
-
-Or with `docker-compose`:
+You can optionally create a service using `docker-compose`:
 
 ```yml
 bitcoind:
