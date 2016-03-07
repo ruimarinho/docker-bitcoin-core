@@ -43,20 +43,7 @@ $ docker run -v ${PWD}/data:/home/bitcoin/.bitcoin -it --rm seegno/bitcoind \
   -regtest=1
 ```
 
-You can optionally create a `Dockerfile` in the root of your application directory:
-
-```Dockerfile
-FROM seegno/bitcoind
-```
-
-Then simply run:
-
-```sh
-$ docker build -t my/bitcoind
-$ docker run --rm -it my/bitcoind
-```
-
-Or with `docker-compose`:
+You can optionally create a service using `docker-compose`:
 
 ```yml
 bitcoind:
@@ -87,7 +74,7 @@ This image is officially supported on Docker version 1.10, with support for olde
 [License information](https://github.com/seegno/docker-bitcoind/blob/master/LICENSE) for the [seegno/docker-bitcoind](https://hub.docker.com/r/seegno/bitcoind) docker project.
 
 [docker-hub-url]: https://hub.docker.com/r/seegno/bitcoind
-[docker-layers-image]: https://img.shields.io/imagelayers/layers/seegno/bitcoind/latest.svg
-[docker-pulls-image]: https://img.shields.io/docker/pulls/seegno/bitcoind.svg
-[docker-size-image]: https://img.shields.io/imagelayers/image-size/seegno/bitcoind/latest.svg
-[docker-stars-image]: https://img.shields.io/docker/stars/seegno/bitcoind.svg
+[docker-layers-image]: https://img.shields.io/imagelayers/layers/seegno/bitcoind/latest.svg?style=flat-square
+[docker-pulls-image]: https://img.shields.io/docker/pulls/seegno/bitcoind.svg?style=flat-square
+[docker-size-image]: https://img.shields.io/imagelayers/image-size/seegno/bitcoind/latest.svg?style=flat-square
+[docker-stars-image]: https://img.shields.io/docker/stars/seegno/bitcoind.svg?style=flat-square

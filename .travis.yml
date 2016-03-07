@@ -2,9 +2,8 @@ after_script:
   - docker images
 
 before_script:
-  - env | sort
   - cd "$VERSION"
-  - image="bitcoind:$VERSION"
+  - IMAGE="bitcoind:$VERSION"
 
 env:
   - VERSION=0.12
@@ -15,7 +14,7 @@ env:
 language: bash
 
 script:
-  - docker build -t "$image" .
-  - docker run "$image" --version | grep "Bitcoin Core"
+  - docker build -t "$IMAGE" .
+  - docker run "$IMAGE" --version | grep "Bitcoin Core"
 
 services: docker
