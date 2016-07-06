@@ -1,4 +1,4 @@
-FROM debian:latest
+FROM debian:jessie
 
 MAINTAINER Rui Marinho <rui.marinho@seegno.com> (@ruimarinho)
 
@@ -19,7 +19,7 @@ RUN curl -o /usr/local/bin/gosu -fSL https://github.com/tianon/gosu/releases/dow
 	&& rm /usr/local/bin/gosu.asc \
 	&& chmod +x /usr/local/bin/gosu
 
-ENV BITCOIN_VERSION=0.12.0
+ENV BITCOIN_VERSION=0.12.1
 ENV BITCOIN_DATA=/home/bitcoin/.bitcoin \
   PATH=/opt/bitcoin-${BITCOIN_VERSION}/bin:$PATH
 

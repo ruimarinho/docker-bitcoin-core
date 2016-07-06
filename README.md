@@ -4,8 +4,8 @@ A bitcoind docker image.
 [![seegno/bitcoind][docker-pulls-image]][docker-hub-url] [![seegno/bitcoind][docker-stars-image]][docker-hub-url] [![seegno/bitcoind][docker-size-image]][docker-hub-url] [![seegno/bitcoind][docker-layers-image]][docker-hub-url]
 
 ## Supported tags and respective `Dockerfile` links
-- `0.12.0-alpine`, `0.12-alpine` ([0.12/alpine/Dockerfile](https://github.com/seegno/docker-bitcoind/blob/master/0.12/alpine/Dockerfile))
-- `0.12.0`, `0.12`, `latest` ([0.12/Dockerfile](https://github.com/seegno/docker-bitcoind/blob/master/0.12/Dockerfile))
+- `0.12.1-alpine`, `0.12-alpine` ([0.12/alpine/Dockerfile](https://github.com/seegno/docker-bitcoind/blob/master/0.12/alpine/Dockerfile))
+- `0.12.1`, `0.12`, `latest` ([0.12/Dockerfile](https://github.com/seegno/docker-bitcoind/blob/master/0.12/Dockerfile))
 - `0.11.2-alpine`, `0.11-alpine` ([0.11/alpine/Dockerfile](https://github.com/seegno/docker-bitcoind/blob/master/0.11/alpine/Dockerfile))
 - `0.11.2`, `0.11` ([0.11/Dockerfile](https://github.com/seegno/docker-bitcoind/blob/master/0.11/Dockerfile))
 

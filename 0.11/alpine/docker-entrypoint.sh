@@ -19,7 +19,7 @@ fi
 
 if [ "$1" = "bitcoind" ] || [ "$1" = "bitcoin-cli" ] || [ "$1" = "bitcoin-tx" ]; then
   echo
-  exec gosu bitcoin "$@"
+  exec su-exec bitcoin "$@"
 fi
 
 echo
