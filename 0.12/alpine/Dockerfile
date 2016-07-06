@@ -1,23 +1,15 @@
-FROM alpine:latest
+FROM alpine:3.4
 
 MAINTAINER Rui Marinho <rui.marinho@seegno.com> (@ruimarinho)
 
 RUN adduser -S bitcoin
 
-ENV GOSU_VERSION=1.7 \
-  GOSU_SHASUM="34049cfc713e8b74b90d6de49690fa601dc040021980812b2f1f691534be8a50  /usr/local/bin/gosu"
-
-RUN apk --no-cache add openssl \
-  && wget -O /usr/local/bin/gosu https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-amd64 \
-  && echo "${GOSU_SHASUM}" | sha256sum -c \
-  && chmod +x /usr/local/bin/gosu
-
 ENV BERKELEYDB_VERSION=db-4.8.30.NC
 ENV BERKELEYDB_PREFIX=/opt/${BERKELEYDB_VERSION}
 
-ENV BITCOIN_VERSION=0.12.0
+ENV BITCOIN_VERSION=0.12.1
 ENV BITCOIN_PREFIX=/opt/bitcoin-${BITCOIN_VERSION} \
-  BITCOIN_SHASUM="92b1b6e1f49e74c914ff3dd43e97bb1859bcd3239310b5fe54db326aba1fd0a5  v${BITCOIN_VERSION}.tar.gz" \
+  BITCOIN_SHASUM="7bdc287575067461c123e1afcb48843f9f78eb5e6cac95b413e2e09f1f7fc7bd  v${BITCOIN_VERSION}.tar.gz" \
   BITCOIN_DATA=/home/bitcoin/.bitcoin
 ENV PATH=${BITCOIN_PREFIX}/bin:$PATH
 
@@ -26,7 +18,9 @@ RUN apk --no-cache --virtual build-dependendencies add autoconf \
     boost-dev \
     build-base \
     chrpath \
+    file \
     libevent-dev \
+    openssl \
     libtool \
     linux-headers \
     openssl-dev \
@@ -64,7 +58,8 @@ RUN apk --no-cache --virtual build-dependendencies add autoconf \
   && apk --no-cache add boost \
     boost-program_options \
     libevent \
-    libzmq
+    libzmq \
+    su-exec
 
 VOLUME ["/home/bitcoin/.bitcoin"]
 
