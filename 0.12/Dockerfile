@@ -4,7 +4,7 @@ MAINTAINER Rui Marinho <rui.marinho@seegno.com> (@ruimarinho)
 
 RUN useradd -r bitcoin
 
-ENV GOSU_VERSION=1.7
+ENV GOSU_VERSION=1.9
 
 RUN apt-get update -y \
   && apt-get install -y curl \
