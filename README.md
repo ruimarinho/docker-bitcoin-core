@@ -4,8 +4,8 @@ A bitcoind docker image.
 [![seegno/bitcoind][docker-pulls-image]][docker-hub-url] [![seegno/bitcoind][docker-stars-image]][docker-hub-url] [![seegno/bitcoind][docker-size-image]][docker-hub-url] [![seegno/bitcoind][docker-layers-image]][docker-hub-url]
 
 ## Supported tags and respective `Dockerfile` links
-- `0.13.0-alpine`, `0.13-alpine` ([0.13/alpine/Dockerfile](https://github.com/seegno/docker-bitcoind/blob/master/0.13/alpine/Dockerfile))
-- `0.13.0`, `0.13`, `latest` ([0.13/Dockerfile](https://github.com/seegno/docker-bitcoind/blob/master/0.13/Dockerfile))
+- `0.13.1-alpine`, `0.13-alpine` ([0.13/alpine/Dockerfile](https://github.com/seegno/docker-bitcoind/blob/master/0.13/alpine/Dockerfile))
+- `0.13.1`, `0.13`, `latest` ([0.13/Dockerfile](https://github.com/seegno/docker-bitcoind/blob/master/0.13/Dockerfile))
 - `0.12.1-alpine`, `0.12-alpine` ([0.12/alpine/Dockerfile](https://github.com/seegno/docker-bitcoind/blob/master/0.12/alpine/Dockerfile))
 - `0.12.1`, `0.12` ([0.12/Dockerfile](https://github.com/seegno/docker-bitcoind/blob/master/0.12/Dockerfile))
 - `0.11.2-alpine`, `0.11-alpine` ([0.11/alpine/Dockerfile](https://github.com/seegno/docker-bitcoind/blob/master/0.11/alpine/Dockerfile))
@@ -62,10 +62,10 @@ The `seegno/bitcoind` image comes in multiple flavors:
 Points to the latest release available of Bitcoin Core. Occasionally pre-release versions will be included.
 
 ### `seegno/bitcoind:<version>`
-Based on a slim Debian image, targets a specific version branch or release of Bitcoin Core (e.g. `0.13.0`, `0.13`).
+Based on a slim Debian image, targets a specific version branch or release of Bitcoin Core (e.g. `0.13.1`, `0.13`).
 
 ### `seegno/bitcoind:<version>-alpine`
-Based on Alpine Linux with Berkeley DB 4.8 (cross-compatible build), targets a specific version branch or release of Bitcoin Core (e.g. `0.13.0`, `0.13`).
+Based on Alpine Linux with Berkeley DB 4.8 (cross-compatible build), targets a specific version branch or release of Bitcoin Core (e.g. `0.13.1`, `0.13`).
 
 ## Supported Docker versions
 This image is officially supported on Docker version 1.12, with support for older versions provided on a best-effort basis.
