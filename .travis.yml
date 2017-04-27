@@ -6,6 +6,8 @@ before_script:
   - IMAGE="bitcoind:${VERSION/\//-}"
 
 env:
+  - VERSION=0.14
+  - VERSION=0.14/alpine
   - VERSION=0.13
   - VERSION=0.13/alpine
   - VERSION=0.12
