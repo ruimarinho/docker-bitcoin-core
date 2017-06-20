@@ -1,4 +1,4 @@
-FROM debian:latest
+FROM debian:jessie
 
 MAINTAINER Rui Marinho <rui.marinho@seegno.com> (@ruimarinho)
 
