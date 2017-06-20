@@ -8,9 +8,8 @@ ENV BERKELEYDB_VERSION=db-4.8.30.NC
 ENV BERKELEYDB_PREFIX=/opt/${BERKELEYDB_VERSION}
 
 ENV BITCOIN_VERSION=0.11.2
-ENV BITCOIN_PREFIX=/opt/bitcoin-${BITCOIN_VERSION} \
-  BITCOIN_SHASUM="aab2cd0c4f045970d259cf9fcee5785b43180d20ccbbedc1f90480e697696b25  v${BITCOIN_VERSION}.tar.gz" \
-  BITCOIN_DATA=/home/bitcoin/.bitcoin
+ENV BITCOIN_PREFIX=/opt/bitcoin-${BITCOIN_VERSION}
+ENV BITCOIN_DATA=/home/bitcoin/.bitcoin
 ENV PATH=${BITCOIN_PREFIX}/bin:$PATH
 
 RUN apk --no-cache --virtual build-dependendencies add autoconf \
@@ -19,6 +18,7 @@ RUN apk --no-cache --virtual build-dependendencies add autoconf \
     build-base \
     chrpath \
     file \
+    gnupg \
     libevent-dev \
     libtool \
     linux-headers \
@@ -27,21 +27,25 @@ RUN apk --no-cache --virtual build-dependendencies add autoconf \
     protobuf-dev \
     zeromq-dev \
   && mkdir -p /tmp/build \
-  && wget -O /tmp/build/${BERKELEYDB_VERSION}.tar.gz "http://download.oracle.com/berkeley-db/${BERKELEYDB_VERSION}.tar.gz" \
-  && tar -xzf "/tmp/build/${BERKELEYDB_VERSION}.tar.gz" -C /tmp/build/ \
-  && sed s/__atomic_compare_exchange/__atomic_compare_exchange_db/g -i "/tmp/build/${BERKELEYDB_VERSION}/dbinc/atomic.h" \
-  && mkdir -p "${BERKELEYDB_PREFIX}" \
-  && cd "/tmp/build/${BERKELEYDB_VERSION}/build_unix" \
-  && ../dist/configure --enable-cxx --disable-shared --with-pic --prefix="${BERKELEYDB_PREFIX}" \
+  && mkdir -p /tmp/build/${BITCOIN_VERSION} \
+  && wget -O /tmp/build/${BERKELEYDB_VERSION}.tar.gz http://download.oracle.com/berkeley-db/${BERKELEYDB_VERSION}.tar.gz \
+  && tar -xzf /tmp/build/${BERKELEYDB_VERSION}.tar.gz -C /tmp/build/ \
+  && sed s/__atomic_compare_exchange/__atomic_compare_exchange_db/g -i /tmp/build/${BERKELEYDB_VERSION}/dbinc/atomic.h \
+  && mkdir -p ${BERKELEYDB_PREFIX} \
+  && cd /tmp/build/${BERKELEYDB_VERSION}/build_unix \
+  && ../dist/configure --enable-cxx --disable-shared --with-pic --prefix=${BERKELEYDB_PREFIX} \
   && make install \
-  && wget -O "/tmp/build/v${BITCOIN_VERSION}.tar.gz" "https://github.com/bitcoin/bitcoin/archive/v${BITCOIN_VERSION}.tar.gz" \
-  && cd /tmp/build \
-  && echo "${BITCOIN_SHASUM}" | sha256sum -c \
-  && tar -xzf v${BITCOIN_VERSION}.tar.gz \
-  && cd "/tmp/build/bitcoin-${BITCOIN_VERSION}" \
+  && wget -O- https://bitcoin.org/laanwj-releases.asc | gpg --import \
+  && wget -P /tmp/build/${BITCOIN_VERSION} https://bitcoin.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS.asc \
+  && wget -P /tmp/build/${BITCOIN_VERSION} https://bitcoin.org/bin/bitcoin-core-${BITCOIN_VERSION}/bitcoin-${BITCOIN_VERSION}.tar.gz \
+  && gpg --verify /tmp/build/${BITCOIN_VERSION}/SHA256SUMS.asc \
+  && cd /tmp/build/${BITCOIN_VERSION} \
+  && grep " bitcoin-${BITCOIN_VERSION}.tar.gz\$" /tmp/build/${BITCOIN_VERSION}/SHA256SUMS.asc | sha256sum -c - \
+  && tar -xzf bitcoin-${BITCOIN_VERSION}.tar.gz -C /tmp/build \
+  && cd /tmp/build/bitcoin-${BITCOIN_VERSION} \
   && ./autogen.sh \
-  && ./configure LDFLAGS="-L${BERKELEYDB_PREFIX}/lib/" CPPFLAGS="-I${BERKELEYDB_PREFIX}/include/" \
-    --prefix="${BITCOIN_PREFIX}" \
+  && ./configure LDFLAGS=-L${BERKELEYDB_PREFIX}/lib/ CPPFLAGS=-I${BERKELEYDB_PREFIX}/include/ \
+    --prefix=${BITCOIN_PREFIX} \
     --mandir=/usr/share/man \
     --disable-tests \
     --disable-bench \
@@ -52,8 +56,8 @@ RUN apk --no-cache --virtual build-dependendencies add autoconf \
     --with-daemon \
   && make install \
   && cd / \
-  && strip "${BITCOIN_PREFIX}/bin/bitcoin-cli" "${BITCOIN_PREFIX}/bin/bitcoind" "${BITCOIN_PREFIX}/bin/bitcoin-tx" "${BITCOIN_PREFIX}/lib/libbitcoinconsensus.a" "${BITCOIN_PREFIX}/lib/libbitcoinconsensus.so.0.0.0" \
-  && rm -rf "/tmp/build" "${BERKELEYDB_PREFIX}/docs" \
+  && strip ${BITCOIN_PREFIX}/bin/bitcoin-cli ${BITCOIN_PREFIX}/bin/bitcoind ${BITCOIN_PREFIX}/bin/bitcoin-tx ${BITCOIN_PREFIX}/lib/libbitcoinconsensus.a ${BITCOIN_PREFIX}/lib/libbitcoinconsensus.so.0.0.0 \
+  && rm -rf /tmp/build ${BERKELEYDB_PREFIX}/docs \
   && apk --no-cache --purge del build-dependendencies \
   && apk --no-cache add boost \
     boost-program_options \
