@@ -19,7 +19,7 @@ RUN curl -o /usr/local/bin/gosu -fSL https://github.com/tianon/gosu/releases/dow
 	&& rm /usr/local/bin/gosu.asc \
 	&& chmod +x /usr/local/bin/gosu
 
-ENV BITCOIN_VERSION=0.14.0
+ENV BITCOIN_VERSION=0.14.1
 ENV BITCOIN_DATA=/home/bitcoin/.bitcoin \
   PATH=/opt/bitcoin-${BITCOIN_VERSION}/bin:$PATH
 
