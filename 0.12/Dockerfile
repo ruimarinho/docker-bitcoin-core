@@ -1,4 +1,4 @@
-FROM debian:jessie
+FROM debian:stretch-slim
 
 MAINTAINER Rui Marinho <rui.marinho@seegno.com> (@ruimarinho)
 
@@ -7,7 +7,7 @@ RUN useradd -r bitcoin
 ENV GOSU_VERSION=1.9
 
 RUN apt-get update -y \
-  && apt-get install -y curl \
+  && apt-get install -y curl gnupg \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
