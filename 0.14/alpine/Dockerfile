@@ -1,4 +1,4 @@
-FROM alpine:3.4
+FROM alpine:3.6
 
 MAINTAINER Rui Marinho <rui.marinho@seegno.com> (@ruimarinho)
 
@@ -63,6 +63,7 @@ RUN apk --no-cache --virtual build-dependendencies add autoconf \
     boost-program_options \
     libevent \
     libzmq \
+    openssl \
     su-exec
 
 VOLUME ["/home/bitcoin/.bitcoin"]
