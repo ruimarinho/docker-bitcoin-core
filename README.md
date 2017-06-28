@@ -31,7 +31,7 @@ $ docker run --rm -it seegno/bitcoind \
   -rpcuser=foo
 ```
 
-By default, `bitcoind` will run as as user `bitcoin` for security reasons and with its default data dir (`~/.bitcoin`). If you'd like to customize where `bitcoind` stores its data, you must use the `BITCOIN_DATA` environment variable. The directory will be automatically created with the correct permissions for the `bitcoin` user and `bitcoind` automatically configured to use it.
+By default, `bitcoind` will run as user `bitcoin` for security reasons and with its default data dir (`~/.bitcoin`). If you'd like to customize where `bitcoind` stores its data, you must use the `BITCOIN_DATA` environment variable. The directory will be automatically created with the correct permissions for the `bitcoin` user and `bitcoind` automatically configured to use it.
 
 ```sh
 $ docker run --env BITCOIN_DATA=/var/lib/bitcoind --rm -it seegno/bitcoind \
