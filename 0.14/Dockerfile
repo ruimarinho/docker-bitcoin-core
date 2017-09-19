@@ -1,6 +1,6 @@
 FROM debian:stretch-slim
 
-MAINTAINER Rui Marinho <rui.marinho@seegno.com> (@ruimarinho)
+MAINTAINER Rui Marinho <ruipmarinho@gmail.com> (@ruimarinho)
 
 RUN useradd -r bitcoin
 

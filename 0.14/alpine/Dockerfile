@@ -1,6 +1,6 @@
 FROM alpine:3.6
 
-MAINTAINER Rui Marinho <rui.marinho@seegno.com> (@ruimarinho)
+MAINTAINER Rui Marinho <ruipmarinho@gmail.com> (@ruimarinho)
 
 RUN adduser -S bitcoin
 
