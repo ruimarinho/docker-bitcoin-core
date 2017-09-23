@@ -8,6 +8,7 @@ ENV BERKELEYDB_VERSION=db-4.8.30.NC
 ENV BERKELEYDB_PREFIX=/opt/${BERKELEYDB_VERSION}
 
 ENV BITCOIN_VERSION=0.15.0.1
+ENV BITCOIN_FOLDER_VERSION=0.15.0
 ENV BITCOIN_PREFIX=/opt/bitcoin-${BITCOIN_VERSION}
 ENV BITCOIN_DATA=/home/bitcoin/.bitcoin
 ENV PATH=${BITCOIN_PREFIX}/bin:$PATH
@@ -42,7 +43,7 @@ RUN apk --no-cache --virtual build-dependendencies add autoconf \
   && cd /tmp/build/${BITCOIN_VERSION} \
   && grep " bitcoin-${BITCOIN_VERSION}.tar.gz\$" /tmp/build/${BITCOIN_VERSION}/SHA256SUMS.asc | sha256sum -c - \
   && tar -xzf bitcoin-${BITCOIN_VERSION}.tar.gz -C /tmp/build \
-  && cd /tmp/build/bitcoin-${BITCOIN_VERSION} \
+  && cd /tmp/build/bitcoin-${BITCOIN_FOLDER_VERSION} \
   && ./autogen.sh \
   && ./configure LDFLAGS=-L${BERKELEYDB_PREFIX}/lib/ CPPFLAGS=-I${BERKELEYDB_PREFIX}/include/ \
     --prefix=${BITCOIN_PREFIX} \
