@@ -20,8 +20,9 @@ RUN curl -o /usr/local/bin/gosu -fSL https://github.com/tianon/gosu/releases/dow
 	&& chmod +x /usr/local/bin/gosu
 
 ENV BITCOIN_VERSION=0.15.0.1
+ENV BITCOIN_FOLDER_VERSION=0.15.0
 ENV BITCOIN_DATA=/home/bitcoin/.bitcoin \
-  PATH=/opt/bitcoin-${BITCOIN_VERSION}/bin:$PATH
+  PATH=/opt/bitcoin-${BITCOIN_FOLDER_VERSION}/bin:$PATH
 
 RUN curl -SL https://bitcoin.org/laanwj-releases.asc | gpg --import \
   && curl -SLO https://bitcoin.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS.asc \
