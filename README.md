@@ -5,7 +5,7 @@ A bitcoin-core docker image.
 
 ## Supported tags and respective `Dockerfile` links
 
-- `0.15.1-alpine`, `0.15-alpine` ([0.15/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.15/Dockerfile))
+- `0.15.1-alpine`, `0.15-alpine` ([0.15/alpine/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.15/alpine/Dockerfile))
 - `0.14.2-alpine`, `0.14-alpine` ([0.14/alpine/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.14/alpine/Dockerfile))
 - `0.13.2-alpine`, `0.13-alpine` ([0.13/alpine/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.13/alpine/Dockerfile))
 - `0.12.1-alpine`, `0.12-alpine` ([0.12/alpine/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.12/alpine/Dockerfile))
