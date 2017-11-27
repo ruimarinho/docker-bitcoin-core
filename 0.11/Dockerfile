@@ -1,4 +1,4 @@
-FROM debian:stretch-slim
+FROM debian:stable-slim
 
 MAINTAINER Rui Marinho <ruipmarinho@gmail.com> (@ruimarinho)
 
