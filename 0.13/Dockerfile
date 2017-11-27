@@ -4,7 +4,7 @@ MAINTAINER Rui Marinho <ruipmarinho@gmail.com> (@ruimarinho)
 
 RUN useradd -r bitcoin
 
-ENV GOSU_VERSION=1.9
+ENV GOSU_VERSION=1.10
 
 RUN apt-get update -y \
   && apt-get install -y curl gnupg \
