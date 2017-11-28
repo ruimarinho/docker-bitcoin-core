@@ -18,9 +18,8 @@ A bitcoin-core docker image.
 - `0.11.2`, `0.11` ([0.11/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.11/Dockerfile))
 
 ## What is Bitcoin Core?
-_from [bitcoinwiki](https://en.bitcoin.it/wiki/Bitcoind)_
 
-Bitcoin Core is a reference client that implements the Bitcoin protocol for remote procedure call (RPC) use. It is also the second Bitcoin client in the network's history.
+Bitcoin Core is a reference client that implements the Bitcoin protocol for remote procedure call (RPC) use. It is also the second Bitcoin client in the network's history. Learn more about Bitcoin Core on the [Bitcoin Developer Reference docs](https://bitcoin.org/en/developer-reference).
 
 ## Usage
 ### How to use this image
