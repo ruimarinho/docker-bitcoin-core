@@ -1,4 +1,5 @@
 # ruimarinho/bitcoin-core
+
 A bitcoin-core docker image.
 
 [![ruimarinho/bitcoin-core][docker-pulls-image]][docker-hub-url] [![ruimarinho/bitcoin-core][docker-stars-image]][docker-hub-url] [![ruimarinho/bitcoin-core][docker-size-image]][docker-hub-url] [![ruimarinho/bitcoin-core][docker-layers-image]][docker-hub-url]
@@ -22,7 +23,9 @@ A bitcoin-core docker image.
 Bitcoin Core is a reference client that implements the Bitcoin protocol for remote procedure call (RPC) use. It is also the second Bitcoin client in the network's history. Learn more about Bitcoin Core on the [Bitcoin Developer Reference docs](https://bitcoin.org/en/developer-reference).
 
 ## Usage
+
 ### How to use this image
+
 This image contains the main binaries from the Bitcoin Core project - `bitcoind`, `bitcoin-cli` and `bitcoin-tx`. It behaves like a binary, so you can pass any arguments to the image and they will be forwarded to the `bitcoind` binary:
 
 ```sh
@@ -100,8 +103,7 @@ In the background, `bitcoin-cli` read the information automatically from `/home/
 
 #### Using rpcauth for remote authentication
 
-Before setting up remote authentication, you will need to generate the `rpcauth` line that will hold the credentials for the Bitcoind Core daemon.
-You can either do this yourself by constructing the line with the format `<user>:<salt>$<hash>` or use the official `rpcuser.py` script to generate this line for you, including a random password that is printed to the console.
+Before setting up remote authentication, you will need to generate the `rpcauth` line that will hold the credentials for the Bitcoind Core daemon. You can either do this yourself by constructing the line with the format `<user>:<salt>$<hash>` or use the official `rpcuser.py` script to generate this line for you, including a random password that is printed to the console.
 
 Example:
 
@@ -156,24 +158,30 @@ To avoid any confusion about whether or not a remote call is being made, let's s
 Done!
 
 ## Image variants
+
 The `ruimarinho/bitcoin-core` image comes in multiple flavors:
 
 ### `ruimarinho/bitcoin-core:latest`
+
 Points to the latest release available of Bitcoin Core. Occasionally pre-release versions will be included.
 
 ### `ruimarinho/bitcoin-core:<version>`
+
 Based on a slim Debian image, targets a specific version branch or release of Bitcoin Core.
 
 ### `ruimarinho/bitcoin-core:<version>-alpine`
+
 Based on Alpine Linux with Berkeley DB 4.8 (cross-compatible build), targets a specific version branch or release of Bitcoin Core.
 
 ## Supported Docker versions
+
 This image is officially supported on Docker version 1.12, with support for older versions provided on a best-effort basis.
 
 ## License
+
 [License information](https://github.com/bitcoin/bitcoin/blob/master/COPYING) for the software contained in this image.
 
-[License information](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/LICENSE) for the [ruimarinho/docker-bitcoin-core](https://hub.docker.com/r/ruimarinho/bitcoin-core) docker project.
+[License information](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/LICENSE) for the [ruimarinho/docker-bitcoin-core][docker-hub-url] docker project.
 
 [docker-hub-url]: https://hub.docker.com/r/ruimarinho/bitcoin-core
 [docker-layers-image]: https://img.shields.io/imagelayers/layers/ruimarinho/bitcoin-core/latest.svg?style=flat-square
