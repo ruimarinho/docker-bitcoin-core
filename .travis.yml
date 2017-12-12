@@ -3,7 +3,7 @@ after_script:
 
 before_script:
   - cd "$VERSION"
-  - IMAGE="bitcoind:${VERSION/\//-}"
+  - IMAGE="bitcoin-core:${VERSION/\//-}"
 
 env:
   - VERSION=0.15
