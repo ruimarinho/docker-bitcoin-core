@@ -6,19 +6,17 @@ A bitcoin-core docker image.
 
 ## Tags
 
-- `0.16.0-alpine`, `0.16-alpine` ([0.16/alpine/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.16/alpine/Dockerfile))
-- `0.15.1-alpine`, `0.15-alpine` ([0.15/alpine/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.15/alpine/Dockerfile))
-- `0.14.2-alpine`, `0.14-alpine` ([0.14/alpine/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.14/alpine/Dockerfile))
-- `0.13.2-alpine`, `0.13-alpine` ([0.13/alpine/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.13/alpine/Dockerfile))
-- `0.12.1-alpine`, `0.12-alpine` ([0.12/alpine/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.12/alpine/Dockerfile))
-- `0.11.2-alpine`, `0.11-alpine` ([0.11/alpine/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.11/alpine/Dockerfile))
-
 - `0.16.0`, `0.16`, `latest` ([0.16/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.16/Dockerfile))
+- `0.16.0-alpine`, `0.16-alpine` ([0.16/alpine/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.16/alpine/Dockerfile))
+
 - `0.15.1`, `0.15` ([0.15/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.15/Dockerfile))
-- `0.14.2`, `0.14` ([0.14/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.14/Dockerfile))
-- `0.13.2`, `0.13` ([0.13/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.13/Dockerfile))
-- `0.12.1`, `0.12` ([0.12/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.12/Dockerfile))
-- `0.11.2`, `0.11` ([0.11/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.11/Dockerfile))
+- `0.15.1-alpine`, `0.15-alpine` ([0.15/alpine/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.15/alpine/Dockerfile))
+
+**Picking the right tag**
+
+- `ruimarinho/bitcoin-core:latest`: points to the latest stable release available of Bitcoin Core. Use this only if you know what you're doing as upgrading Bitcoin Core blindly is a risky procedure.
+- `ruimarinho/bitcoin-core:<version>`: based on a slim Debian image, points to a specific version branch or release of Bitcoin Core. Uses the pre-compiled binaries which are fully tested by the Bitcoin Core team.
+- `ruimarinho/bitcoin-core:<version>-alpine`: based on Alpine Linux with Berkeley DB 4.8 (cross-compatible build), points to a specific version branch or release of Bitcoin Core. Uses a simple, resource efficient Linux distribution with security in mind, but is not officially supported by the Bitcoin Core team. Use at your own risk.
 
 ## What is Bitcoin Core?
 
@@ -159,25 +157,66 @@ To avoid any confusion about whether or not a remote call is being made, let's s
 
 Done!
 
-## Image variants
+### Exposing Ports
 
-The `ruimarinho/bitcoin-core` image comes in multiple flavors:
+Depending on the network (mode) the Bitcoin Core daemon is running as well as the chosen runtime flags, several default ports may be available for mapping.
 
-### `ruimarinho/bitcoin-core:latest`
+Ports can be exposed by mapping all of the available ones (using `-P` and based on what `EXPOSE` documents) or individually by adding `-p`. This mode allows assigning a dynamic port on the host (`-p <port>`) or assigning a fixed port `-p <hostPort>:<containerPort>`.
 
-Points to the latest release available of Bitcoin Core. Occasionally pre-release versions will be included.
+Example for running a node in `regtest` mode mapping JSON-RPC/REST and P2P ports:
 
-### `ruimarinho/bitcoin-core:<version>`
+```sh
+docker run --rm -it \
+  -p 18443:18443 \
+  -p 18444:18444 \
+  ruimarinho/bitcoin-core \
+  -printtoconsole \
+  -regtest=1 \
+  -rpcallowip=172.17.0.0/16 \
+  -rpcpassword=bar \
+  -rpcuser=foo
+```
 
-Based on a slim Debian image, targets a specific version branch or release of Bitcoin Core.
+To test that mapping worked, you can send a JSON-RPC request to the host port:
 
-### `ruimarinho/bitcoin-core:<version>-alpine`
+```
+curl --data-binary '{"jsonrpc":"1.0","id":"1","method":"getnetworkinfo","params":[]}' http://foo:bar@127.0.0.1:18443/
+```
 
-Based on Alpine Linux with Berkeley DB 4.8 (cross-compatible build), targets a specific version branch or release of Bitcoin Core.
+#### Mainnet
 
-## Supported Docker versions
+- JSON-RPC/REST: 8332
+- P2P: 8333
 
-This image is officially supported on Docker version 1.12, with support for older versions provided on a best-effort basis.
+#### Testnet
+
+- Testnet JSON-RPC: 18332
+- P2P: 18333
+
+#### Regtest
+
+- JSON-RPC/REST: 18443 (_since 0.16+_, otherwise _18332_)
+- P2P: 18444
+
+## Archived tags
+
+For historical reasons, the following tags are still available and automatically updated when the underlying base image (_Alpine Linux_ or _Debian stable_) is updated as well:
+
+- `0.14.2`, `0.14` ([0.14/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.14/Dockerfile))
+- `0.14.2-alpine`, `0.14-alpine` ([0.14/alpine/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.14/alpine/Dockerfile))
+
+- `0.13.2`, `0.13` ([0.13/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.13/Dockerfile))
+- `0.13.2-alpine`, `0.13-alpine` ([0.13/alpine/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.13/alpine/Dockerfile))
+
+- `0.12.1`, `0.12` ([0.12/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.12/Dockerfile))
+- `0.12.1-alpine`, `0.12-alpine` ([0.12/alpine/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.12/alpine/Dockerfile))
+
+- `0.11.2`, `0.11` ([0.11/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.11/Dockerfile))
+- `0.11.2-alpine`, `0.11-alpine` ([0.11/alpine/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.11/alpine/Dockerfile))
+
+## Docker
+
+This image is officially supported on Docker version 17.09, with support for older versions provided on a best-effort basis.
 
 ## License
 
