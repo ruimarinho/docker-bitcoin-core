@@ -33,9 +33,10 @@ This image contains the main binaries from the Bitcoin Core project - `bitcoind`
   -printtoconsole \
   -regtest=1 \
   -rpcallowip=172.17.0.0/16 \
-  -rpcpassword=bar \
-  -rpcuser=foo
+  -rpcauth='foo:7d9ba5ae63c3d4dc30583ff4fe65a67e$9e3634e81c11659e3de036d0bf88f89cd169c1039e6e09607562d54765c649cc'
 ```
+
+_Note: [learn more](#using-rpcauth-for-remote-authentication) about how `-rpcauth` works for remote authentication._
 
 By default, `bitcoind` will run as user `bitcoin` for security reasons and with its default data dir (`~/.bitcoin`). If you'd like to customize where `bitcoin-core` stores its data, you must use the `BITCOIN_DATA` environment variable. The directory will be automatically created with the correct permissions for the `bitcoin` user and `bitcoin-core` automatically configured to use it.
 
@@ -103,7 +104,7 @@ In the background, `bitcoin-cli` read the information automatically from `/home/
 
 #### Using rpcauth for remote authentication
 
-Before setting up remote authentication, you will need to generate the `rpcauth` line that will hold the credentials for the Bitcoind Core daemon. You can either do this yourself by constructing the line with the format `<user>:<salt>$<hash>` or use the official `rpcuser.py` script to generate this line for you, including a random password that is printed to the console.
+Before setting up remote authentication, you will need to generate the `rpcauth` line that will hold the credentials for the Bitcoind Core daemon. You can either do this yourself by constructing the line with the format `<user>:<salt>$<hash>` or use the official `rpcauth.py` script to generate this line for you, including a random password that is printed to the console.
 
 Example:
 
@@ -127,7 +128,7 @@ Let's opt for the Docker way:
   -printtoconsole \
   -regtest=1 \
   -rpcallowip=172.17.0.0/16 \
-  -rpcauth='foo:e1fcea9fb59df8b0388f251984fe85$26431097d48c5b6047df8dee64f387f63835c01a2a463728ad75087d0133b8e6'
+  -rpcauth='foo:7d9ba5ae63c3d4dc30583ff4fe65a67e$9e3634e81c11659e3de036d0bf88f89cd169c1039e6e09607562d54765c649cc'
 ```
 
 Two important notes:
@@ -140,20 +141,22 @@ You can now connect via `bitcoin-cli` or any other [compatible client](https://g
 To avoid any confusion about whether or not a remote call is being made, let's spin up another container to execute `bitcoin-cli` and connect it via the Docker network using the password generated above:
 
 ```sh
-❯ docker run --link bitcoin-server --rm ruimarinho/bitcoin-core bitcoin-cli -rpcconnect=bitcoin-server -regtest -rpcuser=foo -rpcpassword='j1DuzF7QRUp-iSXjgewO9T_WT1Qgrtz_XWOHCMn_O-Y=' getmininginfo
-
-{
-  "blocks": 0,
-  "currentblocksize": 0,
-  "currentblockweight": 0,
-  "currentblocktx": 0,
-  "difficulty": 4.656542373906925e-10,
-  "errors": "",
-  "networkhashps": 0,
-  "pooledtx": 0,
-  "chain": "regtest"
-}
+❯ docker run -it --link bitcoin-server --rm ruimarinho/bitcoin-core \
+  bitcoin-cli \
+  -rpcconnect=bitcoin-server \
+  -regtest \
+  -rpcuser=foo\
+  -stdinrpcpass \
+  getbalance
 ```
+
+Enter the password `qDDZdeQ5vw9XXFeVnXT4PZ--tGN2xNjjR4nrtyszZx0=` and hit enter:
+
+```
+0.00000000
+```
+
+Note: under Bitcoin Core < 0.16, use `-rpcpassword="qDDZdeQ5vw9XXFeVnXT4PZ--tGN2xNjjR4nrtyszZx0="` instead of `-stdinrpcpass`.
 
 Done!
 
@@ -163,7 +166,7 @@ Depending on the network (mode) the Bitcoin Core daemon is running as well as th
 
 Ports can be exposed by mapping all of the available ones (using `-P` and based on what `EXPOSE` documents) or individually by adding `-p`. This mode allows assigning a dynamic port on the host (`-p <port>`) or assigning a fixed port `-p <hostPort>:<containerPort>`.
 
-Example for running a node in `regtest` mode mapping JSON-RPC/REST and P2P ports:
+Example for running a node in `regtest` mode mapping JSON-RPC/REST (18443) and P2P (18444) ports:
 
 ```sh
 docker run --rm -it \
@@ -173,14 +176,13 @@ docker run --rm -it \
   -printtoconsole \
   -regtest=1 \
   -rpcallowip=172.17.0.0/16 \
-  -rpcpassword=bar \
-  -rpcuser=foo
+  -rpcauth='foo:7d9ba5ae63c3d4dc30583ff4fe65a67e$9e3634e81c11659e3de036d0bf88f89cd169c1039e6e09607562d54765c649cc'
 ```
 
-To test that mapping worked, you can send a JSON-RPC request to the host port:
+To test that mapping worked, you can send a JSON-RPC curl request to the host port:
 
 ```
-curl --data-binary '{"jsonrpc":"1.0","id":"1","method":"getnetworkinfo","params":[]}' http://foo:bar@127.0.0.1:18443/
+curl --data-binary '{"jsonrpc":"1.0","id":"1","method":"getnetworkinfo","params":[]}' http://foo:qDDZdeQ5vw9XXFeVnXT4PZ--tGN2xNjjR4nrtyszZx0=@127.0.0.1:18443/
 ```
 
 #### Mainnet
