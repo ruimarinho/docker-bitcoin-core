@@ -61,11 +61,11 @@ RUN tar -xzf *.tar.gz
 
 WORKDIR /bitcoin-${BITCOIN_VERSION}
 
-RUN sed -i '/DIST_SUBDIRS/a\ARFLAGS=cr' src/Makefile.am
-RUN sed -i '/AC_PREREQ/a\ARFLAGS=cr' configure.ac
-RUN sed -i '/AC_PREREQ/a\AR_FLAGS=cr' src/univalue/configure.ac
-RUN sed -i '/AX_PROG_CC_FOR_BUILD/a\AR_FLAGS=cr' src/secp256k1/configure.ac
-RUN sed -i s:sys/fcntl.h:fcntl.h: src/compat.h
+COPY patches/boost.patch /boost.patch
+COPY patches/warnings.patch /warnings.patch
+
+RUN patch -p0 < /boost.patch
+RUN patch -p0 < /warnings.patch
 RUN ./autogen.sh
 RUN ./configure LDFLAGS=-L`ls -d /opt/db*`/lib/ CPPFLAGS=-I`ls -d /opt/db*`/include/ \
     --prefix=${BITCOIN_PREFIX} \

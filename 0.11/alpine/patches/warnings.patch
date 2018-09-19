@@ -1,0 +1,46 @@
+diff --git Makefile.am Makefile.am
+index ab68d8fa6..4600e5696 100644
+--- Makefile.am
++++ Makefile.am
+@@ -1,5 +1,6 @@
+ ACLOCAL_AMFLAGS = -I build-aux/m4
+ SUBDIRS = src
++ARFLAGS=cr
+ .PHONY: deploy FORCE
+
+ GZIP_ENV="-9n"
+diff --git configure.ac configure.ac
+index 5debd219e..da7754042 100644
+--- configure.ac
++++ configure.ac
+@@ -1,5 +1,6 @@
+ dnl require autoconf 2.60 (AS_ECHO/AS_ECHO_N)
+ AC_PREREQ([2.60])
++ARFLAGS=cr
+ define(_CLIENT_VERSION_MAJOR, 0)
+ define(_CLIENT_VERSION_MINOR, 11)
+ define(_CLIENT_VERSION_REVISION, 2)
+diff --git src/compat.h src/compat.h
+index 20c2a2514..feaa544e2 100644
+--- src/compat.h
++++ src/compat.h
+@@ -32,7 +32,7 @@
+ #include <windows.h>
+ #include <ws2tcpip.h>
+ #else
+-#include <sys/fcntl.h>
++#include <fcntl.h>
+ #include <sys/mman.h>
+ #include <sys/socket.h>
+ #include <sys/types.h>
+diff --git src/secp256k1/configure.ac src/secp256k1/configure.ac
+index 3dc182951..8d85fb225 100644
+--- src/secp256k1/configure.ac
++++ src/secp256k1/configure.ac
+@@ -1,4 +1,5 @@
+ AC_PREREQ([2.60])
++AR_FLAGS=cr
+ AC_INIT([libsecp256k1],[0.1])
+ AC_CONFIG_AUX_DIR([build-aux])
+ AC_CONFIG_MACRO_DIR([build-aux/m4])
+/bitcoin-0.11.2 #
