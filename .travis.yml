@@ -8,10 +8,6 @@ before_script:
 env:
   - VERSION=0.16
   - VERSION=0.16/alpine
-  - VERSION=0.15
-  - VERSION=0.15/alpine
-  - VERSION=0.14
-  - VERSION=0.14/alpine
   - VERSION=0.13
   - VERSION=0.13/alpine
   - VERSION=0.12
