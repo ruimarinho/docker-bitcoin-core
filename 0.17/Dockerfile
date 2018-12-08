@@ -13,6 +13,7 @@ RUN useradd -r bitcoin \
   && for key in \
     B42F6819007F00F88E364FD4036A9C25BF357DD4 \
   ; do \
+    gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "$key" || \
     gpg --batch --keyserver pgp.mit.edu --recv-keys "$key" || \
     gpg --batch --keyserver keyserver.pgp.com --recv-keys "$key" || \
     gpg --batch --keyserver ha.pool.sks-keyservers.net --recv-keys "$key" || \
