@@ -46,10 +46,11 @@ RUN set -ex \
   && for key in \
     90C8019E36C2E964 \
   ; do \
-    gpg --keyserver pgp.mit.edu --recv-keys "$key" || \
-    gpg --keyserver keyserver.pgp.com --recv-keys "$key" || \
-    gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key" || \
-    gpg --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "$key" ; \
+    gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "$key" || \
+    gpg --batch --keyserver pgp.mit.edu --recv-keys "$key" || \
+    gpg --batch --keyserver keyserver.pgp.com --recv-keys "$key" || \
+    gpg --batch --keyserver ha.pool.sks-keyservers.net --recv-keys "$key" || \
+    gpg --batch --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "$key" ; \
   done
 
 ENV BITCOIN_VERSION=0.11.2
