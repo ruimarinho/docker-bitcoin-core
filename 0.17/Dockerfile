@@ -14,7 +14,16 @@ ENV BITCOIN_VERSION=0.17.1
 ENV BITCOIN_DATA=/home/bitcoin/.bitcoin
 ENV PATH=/opt/bitcoin-${BITCOIN_VERSION}/bin:$PATH
 
-RUN curl -SL https://bitcoin.org/laanwj-releases.asc | gpg --batch --import \
+RUN set -ex \
+  && for key in \
+    01EA5486DE18A882D4C2684590C8019E36C2E964 \
+  ; do \
+      gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "$key" || \
+      gpg --batch --keyserver pgp.mit.edu --recv-keys "$key" || \
+      gpg --batch --keyserver keyserver.pgp.com --recv-keys "$key" || \
+      gpg --batch --keyserver ha.pool.sks-keyservers.net --recv-keys "$key" || \
+      gpg --batch --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "$key" ; \
+    done \
   && curl -SLO https://bitcoin.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS.asc \
   && curl -SLO https://bitcoin.org/bin/bitcoin-core-${BITCOIN_VERSION}/bitcoin-${BITCOIN_VERSION}-x86_64-linux-gnu.tar.gz \
   && gpg --verify SHA256SUMS.asc \
