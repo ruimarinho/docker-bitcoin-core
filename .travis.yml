@@ -26,5 +26,6 @@ language: bash
 script:
   - docker build -t "$IMAGE" .
   - docker run "$IMAGE" --version | grep "Bitcoin Core"
+  - docker build -t "$IMAGE-arm64v8" --build-arg ARCH=arm64v8 .
 
 services: docker
