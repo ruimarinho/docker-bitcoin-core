@@ -10,7 +10,7 @@ RUN useradd -r bitcoin \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-ENV BITCOIN_VERSION=0.19.0.1
+ENV BITCOIN_VERSION=0.19.1
 ENV BITCOIN_DATA=/home/bitcoin/.bitcoin
 ENV PATH=/opt/bitcoin-${BITCOIN_VERSION}/bin:$PATH
 

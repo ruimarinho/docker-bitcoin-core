@@ -6,8 +6,8 @@ A bitcoin-core docker image.
 
 ## Tags
 
-- `0.19.0.1`, `0.19`, `latest` ([0.19/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.19/Dockerfile))
-- `0.19.0.1-alpine`, `0.19-alpine` ([0.19/alpine/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.19/alpine/Dockerfile))
+- `0.19.1`, `0.19`, `latest` ([0.19/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.19/Dockerfile))
+- `0.19.1-alpine`, `0.19-alpine` ([0.19/alpine/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.19/alpine/Dockerfile))
 
 - `0.18.1`, `0.18`, ([0.18/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.18/Dockerfile))
 - `0.18.1-alpine`, `0.18-alpine` ([0.18/alpine/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.18/alpine/Dockerfile))
