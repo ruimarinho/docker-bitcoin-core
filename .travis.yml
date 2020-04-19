@@ -1,30 +1,87 @@
+before_install:
+  - curl -sf https://test.docker.com | sh
+  - docker --version
+
+dist: bionic
+
 after_script:
-  - docker images
 
 before_script:
-  - cd "$VERSION"
-  - IMAGE="bitcoin-core:${VERSION/\//-}"
+  - LATEST_BITCOIN_VERSION=$(ls  | grep 0 | sort -n | tail -n 1)
 
 env:
-  - VERSION=0.19
-  - VERSION=0.19/alpine
-  - VERSION=0.18
-  - VERSION=0.18/alpine
-  - VERSION=0.17
-  - VERSION=0.17/alpine
-  - VERSION=0.16
-  - VERSION=0.16/alpine
-  - VERSION=0.13
-  - VERSION=0.13/alpine
-  - VERSION=0.12
-  - VERSION=0.12/alpine
-  - VERSION=0.11
-  - VERSION=0.11/alpine
+  global:
+    - DOCKER_CLI_EXPERIMENTAL=enabled
+    - PLATFORMS=linux/amd64,linux/arm/v7,linux/arm64
+  matrix:
+    - BITCOIN_VERSION=0.19
+    - BITCOIN_VERSION=0.19/alpine
+    - BITCOIN_VERSION=0.18
+    - BITCOIN_VERSION=0.18/alpine
+    - BITCOIN_VERSION=0.17
+    - BITCOIN_VERSION=0.17/alpine
+    - BITCOIN_VERSION=0.16
+    - BITCOIN_VERSION=0.16/alpine
+    - BITCOIN_VERSION=0.13
+    - BITCOIN_VERSION=0.13/alpine
+    - BITCOIN_VERSION=0.12
+    - BITCOIN_VERSION=0.12/alpine
+    - BITCOIN_VERSION=0.11
+    - BITCOIN_VERSION=0.11/alpine
 
-language: bash
+language: shell
 
 script:
-  - docker build -t "$IMAGE" .
-  - docker run "$IMAGE" --version | grep "Bitcoin Core"
+  - |
+    PUSH=false
+    REPO=ruimarinho/bitcoin-core
+    BUILD_IMAGE_TAG=$REPO:${BITCOIN_VERSION/\//-}
+    LATEST_IMAGE_TAG=$REPO:latest
 
-services: docker
+    if [ -n "$TRAVIS_TAG" ]; then
+      BUILD_IMAGE_TAG=ruimarinho/bitcoin-core:$TRAVIS_TAG
+    fi
+
+    echo ">>> Docker repo set to $REPO"
+    echo ">>> Docker build image set to $BUILD_IMAGE_TAG"
+    echo ">>> Docker latest image set to $LATEST_IMAGE_TAG"
+    echo ">>> Latest bitcoin version found was $LATEST_BITCOIN_VERSION"
+
+    # Push if git tag is not present, we are on the master branch and the build matches the latest version available.
+    if [ -z "$TRAVIS_TAG" ] && [ "$TRAVIS_BRANCH" == "master" ] && [ "$BITCOIN_VERSION" == "$LATEST_BITCOIN_VERSION" ]; then
+      PUSH=true
+      echo ">>> Docker image $BUILD_IMAGE_TAG will be pushed to registry along with $LATEST_IMAGE_TAG"
+    fi
+
+    function version { echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'; }
+
+    # Login to Docker Hub if image will be pushed.
+    if [ "$PUSH" = true ]; then
+      echo "$DOCKER_HUB_PASSWORD" | docker login -u ruimarinho --password-stdin
+    fi
+
+    if [ $(version $BITCOIN_VERSION) -ge $(version "0.19") ] && [[ ${BITCOIN_VERSION} != *"alpine"* ]]; then
+        echo ">>> Using docker buildx"
+
+        docker run --privileged linuxkit/binfmt:v0.8
+        docker buildx create --use
+        docker buildx build \
+          --platform "$PLATFORMS" \
+          --tag "$BUILD_IMAGE_TAG" \
+          `if [ "$PUSH" = true ]; then echo "--tag $LATEST_IMAGE_TAG"; fi` \
+          $BITCOIN_VERSION \
+          `if [ "$PUSH" = true ]; then echo "--push"; fi`
+
+        docker buildx imagetools inspect "$BUILD_IMAGE_TAG"
+    else
+      echo ">>> Using docker build"
+
+      docker build --tag "$BUILD_IMAGE_TAG" $BITCOIN_VERSION
+
+      if [ "$PUSH" = true ]; then
+        docker push "$BUILD_IMAGE_TAG"
+      fi
+
+      docker inspect "$BUILD_IMAGE_TAG"
+    fi
+
