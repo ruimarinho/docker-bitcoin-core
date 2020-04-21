@@ -48,7 +48,7 @@ script:
     echo ">>> Latest bitcoin version found was $LATEST_BITCOIN_VERSION"
 
     # Push if git tag is not present, we are on the master branch and the build matches the latest version available.
-    if [ -z "$TRAVIS_TAG" ] && [ "$TRAVIS_BRANCH" == "master" ] && [ "$BITCOIN_VERSION" == "$LATEST_BITCOIN_VERSION" ]; then
+    if [ -n "$TRAVIS_TAG" ] || [ "$TRAVIS_BRANCH" == "master" ]; then
       PUSH=true
       echo ">>> Docker image $BUILD_IMAGE_TAG will be pushed to registry along with $LATEST_IMAGE_TAG"
     fi
