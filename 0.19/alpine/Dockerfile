@@ -40,7 +40,6 @@ RUN apk --no-cache add libressl
 RUN apk --no-cache add libressl-dev
 RUN apk --no-cache add libtool
 RUN apk --no-cache add linux-headers
-RUN apk --no-cache add protobuf-dev
 RUN apk --no-cache add zeromq-dev
 RUN set -ex \
   && for key in \
@@ -96,8 +95,10 @@ LABEL maintainer.0="João Fonseca (@joaopaulofonseca)" \
 RUN adduser -S bitcoin
 RUN sed -i 's/http\:\/\/dl-cdn.alpinelinux.org/https\:\/\/alpine.global.ssl.fastly.net/g' /etc/apk/repositories
 RUN apk --no-cache add \
-  boost \
-  boost-program_options \
+  boost-chrono \
+  boost-filesystem \
+  boost-system \
+  boost-thread \
   libevent \
   libressl \
   libzmq \
