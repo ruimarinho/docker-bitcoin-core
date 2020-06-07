@@ -1,5 +1,5 @@
 # Build stage for BerkeleyDB
-FROM alpine:3.9 as berkeleydb
+FROM alpine as berkeleydb
 
 RUN sed -i 's/http\:\/\/dl-cdn.alpinelinux.org/https\:\/\/alpine.global.ssl.fastly.net/g' /etc/apk/repositories
 RUN apk --no-cache add autoconf
@@ -23,7 +23,7 @@ RUN make install
 RUN rm -rf ${BERKELEYDB_PREFIX}/docs
 
 # Build stage for Bitcoin Core
-FROM alpine:3.9 as bitcoin-core
+FROM alpine as bitcoin-core
 
 COPY --from=berkeleydb /opt /opt
 
@@ -40,7 +40,6 @@ RUN apk --no-cache add libressl
 RUN apk --no-cache add libressl-dev
 RUN apk --no-cache add libtool
 RUN apk --no-cache add linux-headers
-RUN apk --no-cache add protobuf-dev
 RUN apk --no-cache add zeromq-dev
 RUN set -ex \
   && for key in \
@@ -53,7 +52,7 @@ RUN set -ex \
     gpg --batch --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "$key" ; \
   done
 
-ENV BITCOIN_VERSION=0.16.3
+ENV BITCOIN_VERSION=0.20.0
 ENV BITCOIN_PREFIX=/opt/bitcoin-${BITCOIN_VERSION}
 
 RUN wget https://bitcoin.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS.asc
@@ -96,15 +95,17 @@ LABEL maintainer.0="João Fonseca (@joaopaulofonseca)" \
 RUN adduser -S bitcoin
 RUN sed -i 's/http\:\/\/dl-cdn.alpinelinux.org/https\:\/\/alpine.global.ssl.fastly.net/g' /etc/apk/repositories
 RUN apk --no-cache add \
-  boost \
-  boost-program_options \
+  boost-chrono \
+  boost-filesystem \
+  boost-system \
+  boost-thread \
   libevent \
   libressl \
   libzmq \
   su-exec
 
 ENV BITCOIN_DATA=/home/bitcoin/.bitcoin
-ENV BITCOIN_VERSION=0.16.3
+ENV BITCOIN_VERSION=0.19.1
 ENV BITCOIN_PREFIX=/opt/bitcoin-${BITCOIN_VERSION}
 ENV PATH=${BITCOIN_PREFIX}/bin:$PATH
 
