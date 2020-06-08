@@ -37,7 +37,6 @@ RUN apk --no-cache add file
 RUN apk --no-cache add gnupg
 RUN apk --no-cache add libevent-dev
 RUN apk --no-cache add libressl
-RUN apk --no-cache add libressl-dev
 RUN apk --no-cache add libtool
 RUN apk --no-cache add linux-headers
 RUN apk --no-cache add zeromq-dev
@@ -95,17 +94,15 @@ LABEL maintainer.0="João Fonseca (@joaopaulofonseca)" \
 RUN adduser -S bitcoin
 RUN sed -i 's/http\:\/\/dl-cdn.alpinelinux.org/https\:\/\/alpine.global.ssl.fastly.net/g' /etc/apk/repositories
 RUN apk --no-cache add \
-  boost-chrono \
   boost-filesystem \
   boost-system \
   boost-thread \
   libevent \
-  libressl \
   libzmq \
   su-exec
 
 ENV BITCOIN_DATA=/home/bitcoin/.bitcoin
-ENV BITCOIN_VERSION=0.19.1
+ENV BITCOIN_VERSION=0.20.0
 ENV BITCOIN_PREFIX=/opt/bitcoin-${BITCOIN_VERSION}
 ENV PATH=${BITCOIN_PREFIX}/bin:$PATH
 
