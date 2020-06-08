@@ -47,12 +47,16 @@ jobs:
             else
               TAGS+=("$REPO:$TAG")
             fi
+          else
+            TAGS+=("$REPO:${BITCOIN_VERSION/\//-}")
 
             if [ $(version ${BITCOIN_VERSION}) -ge $(version $LATEST_BITCOIN_MAJOR_VERSION) ] && [[ ${BITCOIN_VERSION} != *"alpine"* ]]; then
               TAGS+=("$REPO:latest")
             fi
-          else
-            TAGS+=("$REPO:${BITCOIN_VERSION/\//-}")
+
+            if [ $GITHUB_REF == "refs/heads/master" ]; then
+              PUSH=true
+            fi
           fi
 
           if [[ ${BITCOIN_VERSION} != *"alpine"* ]] && [ $(version ${BITCOIN_VERSION}) -ge $(version "0.19") ]; then
@@ -85,7 +89,6 @@ jobs:
           echo "Docker platform: ${{ steps.prepare.outputs.docker_platforms }}"
           echo "Push: ${{ steps.prepare.outputs.push }}"
           echo "Tags: ${{ steps.prepare.outputs.tags }}"
-          echo "Tags Arr: ${TAGS[@]}"
 
           echo docker buildx build --platform ${{ steps.prepare.outputs.docker_platforms }} \
             --output "type=image,push=${{steps.prepare.outputs.push}}" \
