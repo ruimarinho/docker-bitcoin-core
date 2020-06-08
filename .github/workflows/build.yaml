@@ -40,11 +40,16 @@ jobs:
 
           if [[ $GITHUB_REF == refs/tags/* ]]; then
             TAG=${GITHUB_REF#refs/tags/}
+            PUSH=true
 
             if [[ ${BITCOIN_VERSION} == *"alpine"* ]]; then
               TAGS+=("$REPO:$TAG-alpine")
             else
               TAGS+=("$REPO:$TAG")
+            fi
+
+            if [ $(version ${BITCOIN_VERSION}) -ge $(version $LATEST_BITCOIN_MAJOR_VERSION) ] && [[ ${BITCOIN_VERSION} != *"alpine"* ]]; then
+              TAGS+=("$REPO:latest")
             fi
           else
             TAGS+=("$REPO:${BITCOIN_VERSION/\//-}")
@@ -52,14 +57,6 @@ jobs:
 
           if [[ ${BITCOIN_VERSION} != *"alpine"* ]] && [ $(version ${BITCOIN_VERSION}) -ge $(version "0.19") ]; then
             PLATFORMS="linux/amd64,linux/arm/v7,linux/arm64"
-          fi
-
-          if [ ${GITHUB_REF} == "refs/heads/master" ]; then
-            PUSH=true
-
-            if [ $(version ${BITCOIN_VERSION}) -ge $(version $LATEST_BITCOIN_MAJOR_VERSION) ] && [[ ${BITCOIN_VERSION} != *"alpine"* ]]; then
-              TAGS+=("$REPO:latest")
-            fi
           fi
 
           echo ::set-output name=build_date::$(date -u +'%Y-%m-%dT%H:%M:%SZ')
