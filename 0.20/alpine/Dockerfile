@@ -95,7 +95,6 @@ LABEL maintainer.0="João Fonseca (@joaopaulofonseca)" \
 RUN adduser -S bitcoin
 RUN sed -i 's/http\:\/\/dl-cdn.alpinelinux.org/https\:\/\/alpine.global.ssl.fastly.net/g' /etc/apk/repositories
 RUN apk --no-cache add \
-  boost-chrono \
   boost-filesystem \
   boost-system \
   boost-thread \
