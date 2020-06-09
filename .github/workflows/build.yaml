@@ -5,7 +5,6 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
-    continue-on-error: true
     strategy:
       matrix:
         version:
@@ -37,12 +36,12 @@ jobs:
         run: |
           function version { echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'; }
 
-          REPO=ruimarinho/bitcoin-core
           BITCOIN_VERSION=${{matrix.version}}
           LATEST_BITCOIN_MAJOR_VERSION=$(ls  | grep 0 | sort -n | tail -n 1)
-          TAGS=("$REPO:${BITCOIN_VERSION/\//-}")
-          PUSH=false
           PLATFORMS="linux/amd64"
+          PUSH=false
+          REPO=ruimarinho/bitcoin-core
+          TAGS=()
 
           if [[ $GITHUB_REF == refs/tags/* ]]; then
             TAG=${GITHUB_REF#refs/tags/}
@@ -53,7 +52,16 @@ jobs:
             else
               TAGS+=("$REPO:$TAG")
             fi
+
+            TAG_MAJOR_MINOR=$(echo $TAG | cut -c -4)
+
+            if [ $(version ${TAG_MAJOR_MINOR}) -gt $(version ${BITCOIN_VERSION}) ]; then
+              echo "Skipping build of base image $BITCOIN_VERSION/ as ${TAG} is targeted at ${TAG_MAJOR_MINOR}/"
+              exit 1
+            fi
           else
+            TAGS=("$REPO:${BITCOIN_VERSION/\//-}")
+
             if [ $(version ${BITCOIN_VERSION}) -ge $(version ${LATEST_BITCOIN_MAJOR_VERSION}) ] && [[ ${BITCOIN_VERSION} != *"alpine"* ]]; then
               echo "Version $(version ${BITCOIN_VERSION}) is greater than or equal to $(version ${LATEST_BITCOIN_MAJOR_VERSION}), tagging as latest"
 
