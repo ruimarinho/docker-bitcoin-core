@@ -26,6 +26,12 @@ jobs:
           - '0.11'
           - '0.11/alpine'
     steps:
+      - name: Set up Docker Buildx
+        uses: crazy-max/ghaction-docker-buildx@v1
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - name: Prepare Docker build
         id: prepare
         run: |
@@ -34,7 +40,7 @@ jobs:
           REPO=ruimarinho/bitcoin-core
           BITCOIN_VERSION=${{matrix.version}}
           LATEST_BITCOIN_MAJOR_VERSION=$(ls  | grep 0 | sort -n | tail -n 1)
-          TAGS=()
+          TAGS=("$REPO:${BITCOIN_VERSION/\//-}")
           PUSH=false
           PLATFORMS="linux/amd64"
 
@@ -48,9 +54,9 @@ jobs:
               TAGS+=("$REPO:$TAG")
             fi
           else
-            TAGS+=("$REPO:${BITCOIN_VERSION/\//-}")
+            if [ $(version ${BITCOIN_VERSION}) -ge $(version ${LATEST_BITCOIN_MAJOR_VERSION}) ] && [[ ${BITCOIN_VERSION} != *"alpine"* ]]; then
+              echo "Version $(version ${BITCOIN_VERSION}) is greater than or equal to $(version ${LATEST_BITCOIN_MAJOR_VERSION}), tagging as latest"
 
-            if [ $(version ${BITCOIN_VERSION}) -ge $(version $LATEST_BITCOIN_MAJOR_VERSION) ] && [[ ${BITCOIN_VERSION} != *"alpine"* ]]; then
               TAGS+=("$REPO:latest")
             fi
 
@@ -68,13 +74,6 @@ jobs:
           echo ::set-output name=docker_username::ruimarinho
           echo ::set-output name=push::${PUSH}
           echo ::set-output name=tags::${TAGS[@]}
-
-      - name: Set up Docker Buildx
-        uses: crazy-max/ghaction-docker-buildx@v1
-
-      - name: Checkout
-        uses: actions/checkout@v2
-
       - name: Login into Docker Hub
         env:
           DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
