@@ -115,6 +115,8 @@ jobs:
 
       - name: Check Docker image manifest
         run: |
+          sudo apt-get install jq
+
           PUSH=${{ steps.prepare.outputs.push }}
 
           if [ "${PUSH}" = false ]; then
@@ -127,6 +129,12 @@ jobs:
           for TAG in "${TAGS[@]}"; do
             echo "Inspecting ${TAG}"
             docker buildx imagetools inspect "${TAG}"
+
+            if docker buildx imagetools inspect "${TAG}" --raw | grep -q manifests; then
+              docker buildx imagetools inspect "${TAG}" --raw | jq -r '.manifests[].digest' | xargs -I sha docker run ruimarinho/bitcoin-core@sha --version | grep "Bitcoin Core"
+            else
+              docker run ${TAG} --version | grep "Bitcoin Core"
+            fi
           done
 
       - name: Clear Docker credentials
