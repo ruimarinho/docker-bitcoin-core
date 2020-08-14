@@ -86,7 +86,7 @@ jobs:
         env:
           DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
         run: |
-          echo "${DOCKER_HUB_PASSWORD}" | docker login --username "${{ steps.prepare.outputs.docker_username }}" --password-stdin
+          docker login --username "${{ steps.prepare.outputs.docker_username }}" --password ${DOCKER_HUB_PASSWORD}
 
       - name: Build Docker image
         run: |
