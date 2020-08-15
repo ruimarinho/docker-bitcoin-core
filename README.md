@@ -6,7 +6,7 @@ A bitcoin-core docker image with support for the following platforms:
 * `arm32v7` (armv7)
 * `arm64` (aarch64, armv8)
 
-[![ruimarinho/bitcoin-core][docker-pulls-image]][docker-hub-url] [![ruimarinho/bitcoin-core][docker-stars-image]][docker-hub-url] [![ruimarinho/bitcoin-core][docker-size-image]][docker-hub-url] [![ruimarinho/bitcoin-core][docker-layers-image]][docker-hub-url]
+[![ruimarinho/bitcoin-core][docker-pulls-image]][docker-hub-url] [![ruimarinho/bitcoin-core][docker-stars-image]][docker-hub-url] [![ruimarinho/bitcoin-core][docker-size-image]][docker-hub-url]
 
 ## Tags
 
@@ -249,7 +249,6 @@ This image is officially supported on Docker version 17.09, with support for old
 [License information](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/LICENSE) for the [ruimarinho/docker-bitcoin-core][docker-hub-url] docker project.
 
 [docker-hub-url]: https://hub.docker.com/r/ruimarinho/bitcoin-core
-[docker-layers-image]: https://img.shields.io/imagelayers/layers/ruimarinho/bitcoin-core/latest.svg?style=flat-square
 [docker-pulls-image]: https://img.shields.io/docker/pulls/ruimarinho/bitcoin-core.svg?style=flat-square
-[docker-size-image]: https://img.shields.io/imagelayers/image-size/ruimarinho/bitcoin-core/latest.svg?style=flat-square
+[docker-size-image]: https://img.shields.io/docker/image-size/ruimarinho/bitcoin-core?style=flat-square
 [docker-stars-image]: https://img.shields.io/docker/stars/ruimarinho/bitcoin-core.svg?style=flat-square
