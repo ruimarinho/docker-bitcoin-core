@@ -24,6 +24,7 @@ jobs:
           - '0.12/alpine'
           - '0.11'
           - '0.11/alpine'
+      fail-fast: false
     steps:
       - name: Set up Docker Buildx
         uses: crazy-max/ghaction-docker-buildx@v1
@@ -57,7 +58,7 @@ jobs:
 
             if [ $(version ${TAG_MAJOR_MINOR}) -gt $(version ${BITCOIN_VERSION}) ]; then
               echo "Skipping build of base image $BITCOIN_VERSION/ as ${TAG} is targeted at ${TAG_MAJOR_MINOR}/"
-              exit 1
+              exit 0
             fi
           else
             TAGS=("$REPO:${BITCOIN_VERSION/\//-}")
@@ -112,30 +113,6 @@ jobs:
             --build-arg "VCS_REF=${GITHUB_SHA::8}" \
             $(printf "%s" "${TAGS[@]/#/ --tag }" ) \
             ${{ matrix.version }}/
-
-      - name: Check Docker image manifest
-        run: |
-          sudo apt-get install jq
-
-          PUSH=${{ steps.prepare.outputs.push }}
-
-          if [ "${PUSH}" = false ]; then
-            echo "Image has not been pushed, skipping..."
-            exit 0
-          fi
-
-          TAGS=(${{ steps.prepare.outputs.tags }})
-
-          for TAG in "${TAGS[@]}"; do
-            echo "Inspecting ${TAG}"
-            docker buildx imagetools inspect "${TAG}"
-
-            if docker buildx imagetools inspect "${TAG}" --raw | grep -q manifests; then
-              docker buildx imagetools inspect "${TAG}" --raw | jq -r '.manifests[].digest' | xargs -I sha docker run ruimarinho/bitcoin-core@sha --version | grep "Bitcoin Core"
-            else
-              docker run ${TAG} --version | grep "Bitcoin Core"
-            fi
-          done
 
       - name: Clear Docker credentials
         run: |

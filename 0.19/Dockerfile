@@ -44,4 +44,6 @@ EXPOSE 8332 8333 18332 18333 18443 18444
 
 ENTRYPOINT ["/entrypoint.sh"]
 
+RUN bitcoind -version | grep "Bitcoin Core version v${BITCOIN_VERSION}"
+
 CMD ["bitcoind"]
