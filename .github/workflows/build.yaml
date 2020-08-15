@@ -83,13 +83,16 @@ jobs:
           echo ::set-output name=docker_username::ruimarinho
           echo ::set-output name=push::${PUSH}
           echo ::set-output name=tags::${TAGS[@]}
-      - name: Login into Docker Hub
+          echo ::set-env name=build::true
+      - if: env.build == 'true'
+        name: Login into Docker Hub
         env:
           DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
         run: |
           docker login --username "${{ steps.prepare.outputs.docker_username }}" --password ${DOCKER_HUB_PASSWORD}
 
-      - name: Build Docker image
+      - if: env.build == 'true'
+        name: Build Docker image
         run: |
           TAGS=(${{ steps.prepare.outputs.tags }})
 
@@ -114,6 +117,7 @@ jobs:
             $(printf "%s" "${TAGS[@]/#/ --tag }" ) \
             ${{ matrix.version }}/
 
-      - name: Clear Docker credentials
+      - if: env.build == 'true'
+        name: Clear Docker credentials
         run: |
           rm -f ${HOME}/.docker/config.json
