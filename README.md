@@ -34,9 +34,10 @@ The newest images (Debian-based, *0.19+*) provide built-in support for multiple 
 
 **Picking the right tag**
 
-- `ruimarinho/bitcoin-core:latest`: points to the latest stable release available of Bitcoin Core. Use this only if you know what you're doing as upgrading Bitcoin Core blindly is a risky procedure.
-- `ruimarinho/bitcoin-core:<version>`: based on a slim Debian image, points to a specific version branch or release of Bitcoin Core. Uses the pre-compiled binaries which are fully tested by the Bitcoin Core team.
-- `ruimarinho/bitcoin-core:<version>-alpine`: based on Alpine Linux with Berkeley DB 4.8 (cross-compatible build), points to a specific version branch or release of Bitcoin Core. Uses a simple, resource efficient Linux distribution with security in mind, but is not officially supported by the Bitcoin Core team. Use at your own risk.
+- `ruimarinho/bitcoin-core:latest`: points to the latest stable release available of Bitcoin Core. Caution when using in production as blindly upgrading Bitcoin Core is a risky procedure.
+- `ruimarinho/bitcoin-core:alpine`: same as above but using the Alpine Linux distribution (a resource efficient Linux distribution with security in mind, but not officially supported by the Bitcoin Core team — use at your own risk).
+- `ruimarinho/bitcoin-core:<version>`: based on a slim Debian image, this tag format points to a specific version branch (e.g. `0.20`) or release of Bitcoin Core (e.g. `0.20.1`). Uses the pre-compiled binaries which are distributed by the Bitcoin Core team.
+- `ruimarinho/bitcoin-core:<version>-alpine`: same as above but using the Alpine Linux distribution.
 
 ## What is Bitcoin Core?
 

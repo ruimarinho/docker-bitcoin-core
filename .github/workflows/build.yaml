@@ -63,10 +63,14 @@ jobs:
           else
             TAGS=("$REPO:${BITCOIN_VERSION/\//-}")
 
-            if [ $(version ${BITCOIN_VERSION}) -ge $(version ${LATEST_BITCOIN_MAJOR_VERSION}) ] && [[ ${BITCOIN_VERSION} != *"alpine"* ]]; then
+            if [ $(version ${BITCOIN_VERSION}) -ge $(version ${LATEST_BITCOIN_MAJOR_VERSION}) ]; then
               echo "Version $(version ${BITCOIN_VERSION}) is greater than or equal to $(version ${LATEST_BITCOIN_MAJOR_VERSION}), tagging as latest"
 
-              TAGS+=("$REPO:latest")
+              if [[ ${BITCOIN_VERSION} != *"alpine"* ]]; then
+                TAGS+=("$REPO:latest")
+              else
+                TAGS+=("$REPO:alpine")
+              fi
             fi
 
             if [ $GITHUB_REF == "refs/heads/master" ]; then
