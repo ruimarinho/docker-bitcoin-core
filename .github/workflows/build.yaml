@@ -56,7 +56,7 @@ jobs:
 
             TAG_MAJOR_MINOR=$(echo $TAG | cut -c -4)
 
-            if [ $(version ${TAG_MAJOR_MINOR}) -gt $(version ${BITCOIN_VERSION}) ]; then
+            if [ $(version ${TAG_MAJOR_MINOR}) -ne $(version ${BITCOIN_VERSION}) ]; then
               echo "Skipping build of base image $BITCOIN_VERSION/ as ${TAG} is targeted at ${TAG_MAJOR_MINOR}/"
               exit 0
             fi
