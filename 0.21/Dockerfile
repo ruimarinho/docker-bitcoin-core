@@ -11,7 +11,7 @@ RUN useradd -r bitcoin \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 ARG TARGETPLATFORM
-ENV BITCOIN_VERSION=0.20.1
+ENV BITCOIN_VERSION=0.21.0
 ENV BITCOIN_DATA=/home/bitcoin/.bitcoin
 ENV PATH=/opt/bitcoin-${BITCOIN_VERSION}/bin:$PATH
 
