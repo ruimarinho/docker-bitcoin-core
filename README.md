@@ -2,15 +2,18 @@
 
 A bitcoin-core docker image with support for the following platforms:
 
-* `amd64` (x86_64)
-* `arm32v7` (armv7)
-* `arm64` (aarch64, armv8)
+- `amd64` (x86_64)
+- `arm32v7` (armv7)
+- `arm64` (aarch64, armv8)
 
 [![ruimarinho/bitcoin-core][docker-pulls-image]][docker-hub-url] [![ruimarinho/bitcoin-core][docker-stars-image]][docker-hub-url] [![ruimarinho/bitcoin-core][docker-size-image]][docker-hub-url]
 
 ## Tags
 
-- `0.20.1`, `0.20`, `latest` ([0.20/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.20/Dockerfile)) [**multi-arch**]
+- `0.21.0`, `0.21.0`, `latest` ([0.21/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.21/Dockerfile)) [**multi-arch**]
+- `0.21.0-alpine`, `0.21.0-alpine` ([0.21/alpine/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.21/alpine/Dockerfile))
+
+- `0.20.1`, `0.20` ([0.20/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.20/Dockerfile)) [**multi-arch**]
 - `0.20.1-alpine`, `0.20-alpine` ([0.20/alpine/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.20/alpine/Dockerfile))
 
 - `0.19.1`, `0.19` ([0.19/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.19/Dockerfile)) [**multi-arch**]
@@ -30,7 +33,7 @@ A bitcoin-core docker image with support for the following platforms:
 
 **Multi-architecture builds**
 
-The newest images (Debian-based, *0.19+*) provide built-in support for multiple architectures. Running `docker pull` on any of the supported platforms will automatically choose the right image for you as all of the manifests and artifacts are pushed to the Docker registry.
+The newest images (Debian-based, _0.19+_) provide built-in support for multiple architectures. Running `docker pull` on any of the supported platforms will automatically choose the right image for you as all of the manifests and artifacts are pushed to the Docker registry.
 
 **Picking the right tag**
 
@@ -80,8 +83,7 @@ You can optionally create a service using `docker-compose`:
 ```yml
 bitcoin-core:
   image: ruimarinho/bitcoin-core
-  command:
-    -printtoconsole
+  command: -printtoconsole
     -regtest=1
 ```
 
@@ -125,7 +127,7 @@ In the background, `bitcoin-cli` read the information automatically from `/home/
 
 #### Using rpcauth for remote authentication
 
-Before setting up remote authentication, you will need to generate the `rpcauth` line that will hold the credentials for the Bitcoind Core daemon. You can either do this yourself by constructing the line with the format `<user>:<salt>$<hash>` or use the official [`rpcauth.py`](https://github.com/bitcoin/bitcoin/blob/master/share/rpcauth/rpcauth.py)  script to generate this line for you, including a random password that is printed to the console.
+Before setting up remote authentication, you will need to generate the `rpcauth` line that will hold the credentials for the Bitcoind Core daemon. You can either do this yourself by constructing the line with the format `<user>:<salt>$<hash>` or use the official [`rpcauth.py`](https://github.com/bitcoin/bitcoin/blob/master/share/rpcauth/rpcauth.py) script to generate this line for you, including a random password that is printed to the console.
 
 _Note: This is a Python 3 script. use `[...] | python3 - <username>` when executing on macOS._
 

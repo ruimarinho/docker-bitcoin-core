@@ -8,6 +8,8 @@ jobs:
     strategy:
       matrix:
         version:
+          - '0.21'
+          - '0.21/alpine'
           - '0.20'
           - '0.20/alpine'
           - '0.19'
@@ -87,7 +89,8 @@ jobs:
           echo ::set-output name=docker_username::ruimarinho
           echo ::set-output name=push::${PUSH}
           echo ::set-output name=tags::${TAGS[@]}
-          echo ::set-env name=build::true
+          echo "build=true" >> $GITHUB_ENV
+
       - if: env.build == 'true'
         name: Login into Docker Hub
         env:
