@@ -227,6 +227,11 @@ curl --data-binary '{"jsonrpc":"1.0","id":"1","method":"getnetworkinfo","params"
 - JSON-RPC/REST: 18443 (_since 0.16+_, otherwise _18332_)
 - P2P: 18444
 
+#### Signet
+
+- JSON-RPC/REST: 38332 
+- P2P: 38333
+
 ## Archived tags
 
 _Please note that due to [CVE-2018-17144](https://nvd.nist.gov/vuln/detail/CVE-2018-17144), the following tags are unavailable: 0.14.0, 0.14.1, 0.14.2, 0.15.0, 0.15.0.1, 0.15.1, 0.16.0, 0.16.1 and 0.16.2._
