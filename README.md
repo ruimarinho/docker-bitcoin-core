@@ -86,7 +86,12 @@ bitcoin-core:
   command:
     -printtoconsole
     -regtest=1
+    -server=1
+    -rpcbind=127.0.0.1
+    -rpcallowip=0.0.0.0/0
 ```
+
+Docker on Linux only supports IPv6, therefore to enable IPv4 use the `rpcbind` option. 
 
 ### Using RPC to interact with the daemon
 
