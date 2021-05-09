@@ -1,10 +1,14 @@
 FROM debian:stable-slim
 
+ARG UID=101
+ARG GID=101
+
 LABEL maintainer.0="João Fonseca (@joaopaulofonseca)" \
   maintainer.1="Pedro Branco (@pedrobranco)" \
   maintainer.2="Rui Marinho (@ruimarinho)"
 
-RUN useradd -r bitcoin \
+RUN groupadd --gid ${GID} bitcoin \
+  && useradd --create-home --no-log-init -u ${UID} -g ${GID} bitcoin \
   && apt-get update -y \
   && apt-get install -y curl gnupg gosu \
   && apt-get clean \

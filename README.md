@@ -71,7 +71,7 @@ This image contains the main binaries from the Bitcoin Core project - `bitcoind`
 
 _Note: [learn more](#using-rpcauth-for-remote-authentication) about how `-rpcauth` works for remote authentication._
 
-By default, `bitcoind` will run as user `bitcoin` for security reasons and with its default data dir (`~/.bitcoin`). If you'd like to customize where `bitcoin-core` stores its data, you must use the `BITCOIN_DATA` environment variable. The directory will be automatically created with the correct permissions for the `bitcoin` user and `bitcoin-core` automatically configured to use it.
+By default, `bitcoind` will run as user `bitcoin` in the group `bitcoin` for security reasons and with its default data dir set to `~/.bitcoin`. If you'd like to customize where `bitcoin-core` stores its data, you must use the `BITCOIN_DATA` environment variable. The directory will be automatically created with the correct permissions for the `bitcoin` user and `bitcoind` automatically configured to use it.
 
 ```sh
 ❯ docker run --env BITCOIN_DATA=/var/lib/bitcoin-core --rm -it ruimarinho/bitcoin-core \
@@ -96,6 +96,20 @@ bitcoin-core:
     -printtoconsole
     -regtest=1
 ```
+
+### Using a custom user id (UID) and group id (GID)
+
+By default, images are created with a `bitcoin` user/group using a static UID/GID (`101:101` on Debian and `100:101` on Alpine). You may customize the user and group ids using the build arguments `UID` (`--build-arg UID=<uid>`) and `GID` (`--build-arg GID=<gid>`).
+
+If you'd like to use the pre-built images, uou can also customize the UID/GID on runtime via environment variables `$UID` and `$GID`:
+
+```sh
+❯ docker run -e UID=10000 -e GID=10000 -it --rm ruimarinho/bitcoin-core \
+  -printtoconsole \
+  -regtest=1
+```
+
+This will recursively change the ownership of the `bitcoin` home directory and `$BITCOIN_DATA` to UID/GID `10000:10000`.
 
 ### Using RPC to interact with the daemon
 
