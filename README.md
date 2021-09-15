@@ -10,7 +10,10 @@ A bitcoin-core docker image with support for the following platforms:
 
 ## Tags
 
-- `0.21.1`, `0.21`, `latest` ([0.21/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.21/Dockerfile)) [**multi-arch**]
+- `22.0`, `22`, `latest` ([22.0/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/22.0/Dockerfile)) [**multi-arch**]
+- `22.0-alpine`, `22.0-alpine` ([22.0/alpine/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/22.0/alpine/Dockerfile))
+
+- `0.21.1`, `0.21` ([0.21/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.21/Dockerfile)) [**multi-arch**]
 - `0.21.1-alpine`, `0.21-alpine` ([0.21/alpine/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.21/alpine/Dockerfile))
 
 - `0.20.1`, `0.20` ([0.20/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/0.20/Dockerfile)) [**multi-arch**]
@@ -229,7 +232,7 @@ curl --data-binary '{"jsonrpc":"1.0","id":"1","method":"getnetworkinfo","params"
 
 #### Signet
 
-- JSON-RPC/REST: 38332 
+- JSON-RPC/REST: 38332
 - P2P: 38333
 
 ## Archived tags
