@@ -32,7 +32,9 @@ RUN apk --no-cache add autoconf
 RUN apk --no-cache add automake
 RUN apk --no-cache add boost-dev
 RUN apk --no-cache add build-base
+RUN apk --no-cache add ca-certificates
 RUN apk --no-cache add chrpath
+RUN apk --no-cache add curl
 RUN apk --no-cache add file
 RUN apk --no-cache add gnupg
 RUN apk --no-cache add libevent-dev
@@ -53,11 +55,15 @@ RUN set -ex \
     gpg --batch --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "$key" ; \
   done
 
+# Workaround for Let's Encrypt DST Root CA X3 expiration.
+RUN sed -i 's#mozilla\/DST_Root_CA_X3.crt#!mozilla\/DST_Root_CA_X3.crt#g' /etc/ca-certificates.conf
+RUN update-ca-certificates
+
 ENV BITCOIN_VERSION=0.11.2
 ENV BITCOIN_PREFIX=/opt/bitcoin-${BITCOIN_VERSION}
 
-RUN wget https://bitcoin.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS.asc
-RUN wget https://bitcoin.org/bin/bitcoin-core-${BITCOIN_VERSION}/bitcoin-${BITCOIN_VERSION}.tar.gz
+RUN curl -O https://bitcoin.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS.asc
+RUN curl -O https://bitcoin.org/bin/bitcoin-core-${BITCOIN_VERSION}/bitcoin-${BITCOIN_VERSION}.tar.gz
 RUN gpg --verify SHA256SUMS.asc
 RUN grep " bitcoin-${BITCOIN_VERSION}.tar.gz\$" SHA256SUMS.asc | sha256sum -c -
 RUN tar -xzf *.tar.gz
