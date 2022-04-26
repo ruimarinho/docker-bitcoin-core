@@ -72,6 +72,7 @@ ENV BITCOIN_PREFIX=/opt/bitcoin-${BITCOIN_VERSION}
 RUN wget https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS
 RUN wget https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS.asc
 RUN wget https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/bitcoin-${BITCOIN_VERSION}.tar.gz
+RUN sed -i -e '156,162d' SHA256SUMS.asc
 RUN gpg --verify SHA256SUMS.asc SHA256SUMS
 RUN grep " bitcoin-${BITCOIN_VERSION}.tar.gz\$" SHA256SUMS | sha256sum -c -
 RUN tar -xzf *.tar.gz
