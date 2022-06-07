@@ -15,6 +15,13 @@ RUN tar -xzf *.tar.gz
 RUN sed s/__atomic_compare_exchange/__atomic_compare_exchange_db/g -i ${BERKELEYDB_VERSION}/dbinc/atomic.h
 RUN mkdir -p ${BERKELEYDB_PREFIX}
 
+WORKDIR /${BERKELEYDB_VERSION}/dist
+
+RUN wget -O config.guess 'http://git.savannah.gnu.org/gitweb/?p=config.git;a=blob_plain;f=config.guess;hb=02ba26b218d3d3db6c56e014655faf463cefa983'
+RUN wget -O config.sub 'http://git.savannah.gnu.org/gitweb/?p=config.git;a=blob_plain;f=config.sub;hb=02ba26b218d3d3db6c56e014655faf463cefa983'
+RUN echo "05a24a2cb33bddf1c8962423b04ee824a1c2763613ac48da5a087f7f2624a9e6  config.guess" | sha256sum -c
+RUN echo "deb02c26f43b2ea64276c9ede77ec0f53d08e6256710f3c0a12275712085c348  config.sub" | sha256sum -c
+
 WORKDIR /${BERKELEYDB_VERSION}/build_unix
 
 RUN ../dist/configure --enable-cxx --disable-shared --with-pic --prefix=${BERKELEYDB_PREFIX}
