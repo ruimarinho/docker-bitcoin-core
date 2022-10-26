@@ -39,6 +39,7 @@ RUN apk --no-cache add libevent-dev
 RUN apk --no-cache add libressl
 RUN apk --no-cache add libtool
 RUN apk --no-cache add linux-headers
+RUN apk --no-cache add sqlite-dev
 RUN apk --no-cache add zeromq-dev
 RUN set -ex \
   && for key in \
@@ -88,6 +89,7 @@ RUN ./configure LDFLAGS=-L`ls -d /opt/db*`/lib/ CPPFLAGS=-I`ls -d /opt/db*`/incl
     --with-gui=no \
     --with-utils \
     --with-libs \
+    --with-sqlite=yes \
     --with-daemon
 RUN make -j4
 RUN make install
@@ -112,6 +114,7 @@ RUN apk --no-cache add \
   boost-thread \
   libevent \
   libzmq \
+  sqlite-dev \
   su-exec
 
 ENV BITCOIN_DATA=/home/bitcoin/.bitcoin
