@@ -84,14 +84,17 @@ RUN strip ${BITCOIN_PREFIX}/bin/bitcoind
 RUN strip ${BITCOIN_PREFIX}/lib/libbitcoinconsensus.a
 RUN strip ${BITCOIN_PREFIX}/lib/libbitcoinconsensus.so.0.0.0
 
-# Build stage for compiled artifacts
 FROM alpine
+
+ARG UID=100
+ARG GID=101
 
 LABEL maintainer.0="João Fonseca (@joaopaulofonseca)" \
   maintainer.1="Pedro Branco (@pedrobranco)" \
   maintainer.2="Rui Marinho (@ruimarinho)"
 
-RUN adduser -S bitcoin
+RUN addgroup -S bitcoin
+RUN adduser -G bitcoin -H -S bitcoin
 RUN sed -i 's/http\:\/\/dl-cdn.alpinelinux.org/https\:\/\/alpine.global.ssl.fastly.net/g' /etc/apk/repositories
 RUN apk --no-cache add \
   boost-filesystem \
@@ -99,6 +102,7 @@ RUN apk --no-cache add \
   boost-thread \
   libevent \
   libzmq \
+  shadow \
   su-exec
 
 ENV BITCOIN_DATA=/home/bitcoin/.bitcoin

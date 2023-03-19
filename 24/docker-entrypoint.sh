@@ -1,5 +1,15 @@
-#!/bin/sh
+#!/bin/bash
 set -e
+
+if [ -n "${UID+x}" ] && [ "${UID}" != "0" ]; then
+  usermod -u "$UID" bitcoin
+fi
+
+if [ -n "${GID+x}" ] && [ "${GID}" != "0" ]; then
+  groupmod -g "$GID" bitcoin
+fi
+
+echo "$0: assuming uid:gid for bitcoin:bitcoin of $(id -u bitcoin):$(id -g bitcoin)"
 
 if [ $(echo "$1" | cut -c1) = "-" ]; then
   echo "$0: assuming arguments for bitcoind"
@@ -10,7 +20,10 @@ fi
 if [ $(echo "$1" | cut -c1) = "-" ] || [ "$1" = "bitcoind" ]; then
   mkdir -p "$BITCOIN_DATA"
   chmod 700 "$BITCOIN_DATA"
-  chown -R bitcoin "$BITCOIN_DATA"
+  # Fix permissions for home dir.
+  chown -R bitcoin:bitcoin "$(getent passwd bitcoin | cut -d: -f6)"
+  # Fix permissions for bitcoin data dir.
+  chown -R bitcoin:bitcoin "$BITCOIN_DATA"
 
   echo "$0: setting data directory to $BITCOIN_DATA"
 
