@@ -102,9 +102,6 @@ RUN addgroup bitcoin --gid ${GID} --system
 RUN adduser --uid ${UID} --system bitcoin --ingroup bitcoin
 RUN sed -i 's/http\:\/\/dl-cdn.alpinelinux.org/https\:\/\/alpine.global.ssl.fastly.net/g' /etc/apk/repositories
 RUN apk --no-cache add \
-  boost-filesystem \
-  boost-system \
-  boost-thread \
   libevent \
   libzmq \
   shadow \
