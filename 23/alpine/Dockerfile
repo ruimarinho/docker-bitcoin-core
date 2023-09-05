@@ -70,7 +70,7 @@ RUN set -ex \
   done && \
   wget -O- https://raw.githubusercontent.com/Kvaciral/kvaciral/main/kvaciral.asc | gpg --import
 
-ENV BITCOIN_VERSION=23.0
+ENV BITCOIN_VERSION=23.2
 ENV BITCOIN_PREFIX=/opt/bitcoin-${BITCOIN_VERSION}
 
 RUN wget https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS
@@ -128,7 +128,7 @@ RUN apk --no-cache add \
   su-exec
 
 ENV BITCOIN_DATA=/home/bitcoin/.bitcoin
-ENV BITCOIN_VERSION=23.0
+ENV BITCOIN_VERSION=23.2
 ENV BITCOIN_PREFIX=/opt/bitcoin-${BITCOIN_VERSION}
 ENV PATH=${BITCOIN_PREFIX}/bin:$PATH
 
