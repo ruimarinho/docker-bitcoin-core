@@ -1,4 +1,4 @@
-FROM debian:bullseye-slim as builder
+FROM debian:bookworm-slim as builder
 
 LABEL maintainer.0="João Fonseca (@joaopaulofonseca)" \
   maintainer.1="Pedro Branco (@pedrobranco)" \
@@ -32,7 +32,7 @@ RUN set -ex \
   && rm -rf /opt/bitcoin-${BITCOIN_VERSION}/bin/bitcoin-qt
 
 # Second stage
-FROM debian:bullseye-slim
+FROM debian:bookworm-slim
 
 ARG UID=101
 ARG GID=101
