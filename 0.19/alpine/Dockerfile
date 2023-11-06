@@ -23,7 +23,7 @@ RUN make install
 RUN rm -rf ${BERKELEYDB_PREFIX}/docs
 
 # Build stage for Bitcoin Core
-FROM alpine as bitcoin-core
+FROM alpine:3.13.0 as bitcoin-core
 
 COPY --from=berkeleydb /opt /opt
 
@@ -55,8 +55,8 @@ RUN set -ex \
 ENV BITCOIN_VERSION=0.19.1
 ENV BITCOIN_PREFIX=/opt/bitcoin-${BITCOIN_VERSION}
 
-RUN wget https://bitcoin.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS.asc
-RUN wget https://bitcoin.org/bin/bitcoin-core-${BITCOIN_VERSION}/bitcoin-${BITCOIN_VERSION}.tar.gz
+RUN wget https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS.asc
+RUN wget https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/bitcoin-${BITCOIN_VERSION}.tar.gz
 RUN gpg --verify SHA256SUMS.asc
 RUN grep " bitcoin-${BITCOIN_VERSION}.tar.gz\$" SHA256SUMS.asc | sha256sum -c -
 RUN tar -xzf *.tar.gz
@@ -79,6 +79,12 @@ RUN ./configure LDFLAGS=-L`ls -d /opt/db*`/lib/ CPPFLAGS=-I`ls -d /opt/db*`/incl
     --with-daemon
 RUN make -j4
 RUN make install
+
+# copy libs needed to run on latest alpine
+RUN mkdir /staging-libs && \
+    ldd ${BITCOIN_PREFIX}/bin/bitcoind | awk '$1 ~ /^\// {print $1} $3 ~ /^\// {print $3}' | \
+    while read -r lib; do cp "$lib" /staging-libs/; done
+
 RUN strip ${BITCOIN_PREFIX}/bin/bitcoin-cli
 RUN strip ${BITCOIN_PREFIX}/bin/bitcoin-tx
 RUN strip ${BITCOIN_PREFIX}/bin/bitcoind
@@ -98,15 +104,14 @@ RUN addgroup -S bitcoin
 RUN adduser -G bitcoin -H -S bitcoin
 RUN sed -i 's/http\:\/\/dl-cdn.alpinelinux.org/https\:\/\/alpine.global.ssl.fastly.net/g' /etc/apk/repositories
 RUN apk --no-cache add \
-  boost-chrono \
-  boost-filesystem \
-  boost-system \
-  boost-thread \
-  libevent \
   libressl \
   libzmq \
   shadow \
   su-exec
+
+# Copy libraries from the builder stage
+RUN mkdir -p /usr/local/lib
+COPY --from=bitcoin-core /staging-libs/* /usr/local/lib/
 
 ENV BITCOIN_DATA=/home/bitcoin/.bitcoin
 ENV BITCOIN_VERSION=0.19.1

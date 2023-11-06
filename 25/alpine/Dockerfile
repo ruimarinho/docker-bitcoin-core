@@ -17,13 +17,13 @@ RUN mkdir -p ${BERKELEYDB_PREFIX}
 
 WORKDIR /${BERKELEYDB_VERSION}/build_unix
 
-RUN ../dist/configure --enable-cxx --disable-shared --with-pic --prefix=${BERKELEYDB_PREFIX}
+RUN ../dist/configure --enable-cxx --disable-shared --with-pic --prefix=${BERKELEYDB_PREFIX} --build=aarch64-unknown-linux-gnu
 RUN make -j4
 RUN make install
 RUN rm -rf ${BERKELEYDB_PREFIX}/docs
 
 # Build stage for Bitcoin Core
-FROM alpine:3.13.0 as bitcoin-core
+FROM alpine as bitcoin-core
 
 COPY --from=berkeleydb /opt /opt
 
@@ -35,60 +35,60 @@ RUN apk --no-cache add build-base
 RUN apk --no-cache add chrpath
 RUN apk --no-cache add file
 RUN apk --no-cache add gnupg
+RUN apk --no-cache add git
 RUN apk --no-cache add libevent-dev
 RUN apk --no-cache add libressl
 RUN apk --no-cache add libtool
 RUN apk --no-cache add linux-headers
+RUN apk --no-cache add sqlite-dev
 RUN apk --no-cache add zeromq-dev
-RUN set -ex \
-  && for key in \
-    90C8019E36C2E964 \
-  ; do \
-    gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "$key" || \
-    gpg --batch --keyserver pgp.mit.edu --recv-keys "$key" || \
-    gpg --batch --keyserver keyserver.pgp.com --recv-keys "$key" || \
-    gpg --batch --keyserver ha.pool.sks-keyservers.net --recv-keys "$key" || \
-    gpg --batch --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "$key" ; \
-  done
 
-ENV BITCOIN_VERSION=0.20.1
+ENV BITCOIN_VERSION=25.1
 ENV BITCOIN_PREFIX=/opt/bitcoin-${BITCOIN_VERSION}
+ENV BITCOIN_SOURCE_DIR=/bitcoin/src
+ENV SIGS_REPO_URL="https://github.com/bitcoin-core/guix.sigs.git"
+ENV SIGS_CLONE_DIR="guix.sigs"
+ENV VERIFY_SCRIPT_URL="https://github.com/bitcoin/bitcoin/raw/master/contrib/verify-binaries/verify.py"
 
-RUN wget https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS.asc
-RUN wget https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/bitcoin-${BITCOIN_VERSION}.tar.gz
-RUN gpg --verify SHA256SUMS.asc
-RUN grep " bitcoin-${BITCOIN_VERSION}.tar.gz\$" SHA256SUMS.asc | sha256sum -c -
-RUN tar -xzf *.tar.gz
+WORKDIR /bitcoin
+RUN set -ex \
+  && wget https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/bitcoin-${BITCOIN_VERSION}.tar.gz \
+  && wget https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS \
+  && wget https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS.asc \
+  && git clone ${SIGS_REPO_URL} ${SIGS_CLONE_DIR} \
+  && gpg --import "${SIGS_CLONE_DIR}"/builder-keys/* \
+  && wget -O verify.py ${VERIFY_SCRIPT_URL} \
+  && chmod +x verify.py \
+  && ./verify.py bin SHA256SUMS \
+    "bitcoin-${BITCOIN_VERSION}.tar.gz" \
+  && mkdir -p ${BITCOIN_SOURCE_DIR} \
+  && tar -xzf "bitcoin-${BITCOIN_VERSION}.tar.gz" -C ${BITCOIN_SOURCE_DIR} \
+  && rm -rf ${SIGS_CLONE_DIR}
 
-WORKDIR /bitcoin-${BITCOIN_VERSION}
+WORKDIR "${BITCOIN_SOURCE_DIR}/bitcoin-${BITCOIN_VERSION}"
 
-RUN sed -i '/AC_PREREQ/a\AR_FLAGS=cr' src/univalue/configure.ac
-RUN sed -i '/AX_PROG_CC_FOR_BUILD/a\AR_FLAGS=cr' src/secp256k1/configure.ac
-RUN sed -i s:sys/fcntl.h:fcntl.h: src/compat.h
+RUN sed -i s:sys/fcntl.h:fcntl.h: src/compat/compat.h
 RUN ./autogen.sh
 RUN ./configure LDFLAGS=-L`ls -d /opt/db*`/lib/ CPPFLAGS=-I`ls -d /opt/db*`/include/ \
-    --prefix=${BITCOIN_PREFIX} \
-    --mandir=/usr/share/man \
-    --disable-tests \
-    --disable-bench \
-    --disable-ccache \
-    --with-gui=no \
-    --with-utils \
-    --with-libs \
-    --with-daemon
+  --prefix=${BITCOIN_PREFIX} \
+  --mandir=/usr/share/man \
+  --disable-tests \
+  --disable-bench \
+  --disable-ccache \
+  --with-gui=no \
+  --with-utils \
+  --with-libs \
+  --with-sqlite=yes \
+  --with-daemon
 RUN make -j4
 RUN make install
-
-# copy libs needed to run on latest alpine
-RUN mkdir /staging-libs && \
-    ldd ${BITCOIN_PREFIX}/bin/bitcoind | awk '$1 ~ /^\// {print $1} $3 ~ /^\// {print $3}' | \
-    while read -r lib; do cp "$lib" /staging-libs/; done
 RUN strip ${BITCOIN_PREFIX}/bin/bitcoin-cli
 RUN strip ${BITCOIN_PREFIX}/bin/bitcoin-tx
 RUN strip ${BITCOIN_PREFIX}/bin/bitcoind
 RUN strip ${BITCOIN_PREFIX}/lib/libbitcoinconsensus.a
 RUN strip ${BITCOIN_PREFIX}/lib/libbitcoinconsensus.so.0.0.0
 
+# Build stage for compiled artifacts
 FROM alpine
 
 ARG UID=100
@@ -98,20 +98,18 @@ LABEL maintainer.0="João Fonseca (@joaopaulofonseca)" \
   maintainer.1="Pedro Branco (@pedrobranco)" \
   maintainer.2="Rui Marinho (@ruimarinho)"
 
-RUN addgroup -S bitcoin
-RUN adduser -G bitcoin -H -S bitcoin
+RUN addgroup bitcoin --gid ${GID} --system
+RUN adduser --uid ${UID} --system bitcoin --ingroup bitcoin
 RUN sed -i 's/http\:\/\/dl-cdn.alpinelinux.org/https\:\/\/alpine.global.ssl.fastly.net/g' /etc/apk/repositories
 RUN apk --no-cache add \
+  libevent \
   libzmq \
   shadow \
+  sqlite-dev \
   su-exec
 
-# Copy libraries from the builder stage
-RUN mkdir -p /usr/local/lib
-COPY --from=bitcoin-core /staging-libs/* /usr/local/lib/
-
 ENV BITCOIN_DATA=/home/bitcoin/.bitcoin
-ENV BITCOIN_VERSION=0.20.1
+ENV BITCOIN_VERSION=25.1
 ENV BITCOIN_PREFIX=/opt/bitcoin-${BITCOIN_VERSION}
 ENV PATH=${BITCOIN_PREFIX}/bin:$PATH
 
