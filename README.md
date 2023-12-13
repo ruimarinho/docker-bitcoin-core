@@ -10,7 +10,10 @@ A bitcoin-core docker image with support for the following platforms:
 
 ## Tags
 
-- `24.0.1`, `24`, `latest` ([24/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/24/Dockerfile)) [**multi-arch**]
+- `26.0.0`, `26`, `latest` ([26/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/26/Dockerfile)) [**multi-arch**]
+- `26.0.0-alpine`, `26-alpine` ([26/alpine/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/26/alpine/Dockerfile))
+
+- `24.0.1`, `24` ([24/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/24/Dockerfile)) [**multi-arch**]
 - `24.0.1-alpine`, `24-alpine` ([24/alpine/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/24/alpine/Dockerfile))
 
 - `23.0`, `23` ([23/Dockerfile](https://github.com/ruimarinho/docker-bitcoin-core/blob/master/23/Dockerfile)) [**multi-arch**]
