@@ -42,7 +42,7 @@ RUN set -ex \
     /opt/bitcoin-${BITCOIN_VERSION}/libexec/bitcoin-gui \
     /opt/bitcoin-${BITCOIN_VERSION}/libexec/test_bitcoin
 
-COPY docker-entrypoint.sh /entrypoint.sh
+COPY --chmod=755 docker-entrypoint.sh /entrypoint.sh
 
 VOLUME ["/home/bitcoin/.bitcoin"]
 
