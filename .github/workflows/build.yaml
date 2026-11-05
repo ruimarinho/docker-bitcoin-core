@@ -1,6 +1,12 @@
 name: build
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - '*'
+  pull_request:
 
 jobs:
   build:
@@ -89,14 +95,15 @@ jobs:
           echo ::set-output name=tags::${TAGS[@]}
           echo ::set-output name=build::true
 
-      - if: ${{ steps.prepare.outputs.build }} == 'true'
+      # Pull requests from forks have no access to secrets, so they build without logging in.
+      - if: steps.prepare.outputs.build == 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
         name: Login into Docker Hub
         uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550 # v4.8.0
         with:
           username: ruimarinho
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-      - if: ${{ steps.prepare.outputs.build }} == 'true'
+      - if: steps.prepare.outputs.build == 'true'
         name: Build Docker image
         run: |
           TAGS=(${{ steps.prepare.outputs.tags }})
