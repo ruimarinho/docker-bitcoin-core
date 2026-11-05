@@ -30,10 +30,14 @@ RUN set -ex \
   && curl -SLO https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/bitcoin-${BITCOIN_VERSION}-${TARGETPLATFORM}.tar.gz \
   && curl -SLO https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS \
   && curl -SLO https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS.asc \
-  && gpg --verify SHA256SUMS.asc SHA256SUMS \
+  && { gpg --batch --status-fd 1 --verify SHA256SUMS.asc SHA256SUMS > SHA256SUMS.status || true; } \
+  && if grep -q '^\[GNUPG:\] BADSIG ' SHA256SUMS.status; then echo 'SHA256SUMS has a bad signature' >&2; exit 1; fi \
+  && GOOD_SIGNATURES=$(grep -cE '^\[GNUPG:\] (GOODSIG|EXPKEYSIG) ' SHA256SUMS.status || true) \
+  && echo "SHA256SUMS has ${GOOD_SIGNATURES} good signatures, at least 5 required" \
+  && [ "${GOOD_SIGNATURES}" -ge 5 ] \
   && grep " bitcoin-${BITCOIN_VERSION}-${TARGETPLATFORM}.tar.gz" SHA256SUMS | sha256sum -c - \
   && tar -xzf *.tar.gz -C /opt \
-  && rm *.tar.gz *.asc \
+  && rm *.tar.gz *.asc SHA256SUMS.status \
   && rm -rf /opt/bitcoin-${BITCOIN_VERSION}/bin/bitcoin-qt
 
 COPY docker-entrypoint.sh /entrypoint.sh
