@@ -65,9 +65,9 @@ jobs:
             fi
 
             if [ $(version ${TAG}) -ge $(version "22.0") ]; then
-              TAG_MAJOR_MINOR=$(echo $TAG | cut -c -2)"
+              TAG_MAJOR_MINOR=$(echo $TAG | cut -c -2)
             else
-              TAG_MAJOR_MINOR=$(echo $TAG | cut -c -4)"
+              TAG_MAJOR_MINOR=$(echo $TAG | cut -c -4)
             fi
 
             if [ $(version ${TAG_MAJOR_MINOR}) -ne $(version ${BITCOIN_VERSION}) ]; then
