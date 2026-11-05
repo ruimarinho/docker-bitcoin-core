@@ -40,7 +40,7 @@ RUN set -ex \
   && rm *.tar.gz *.asc SHA256SUMS.status \
   && rm -rf /opt/bitcoin-${BITCOIN_VERSION}/bin/bitcoin-qt
 
-COPY docker-entrypoint.sh /entrypoint.sh
+COPY --chmod=755 docker-entrypoint.sh /entrypoint.sh
 
 VOLUME ["/home/bitcoin/.bitcoin"]
 
