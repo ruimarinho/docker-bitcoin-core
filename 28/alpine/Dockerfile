@@ -41,28 +41,9 @@ RUN apk --no-cache add libtool
 RUN apk --no-cache add linux-headers
 RUN apk --no-cache add sqlite-dev
 RUN apk --no-cache add zeromq-dev
-RUN set -ex \
-  && for key in \
-  152812300785C96444D3334D17565732E08E5E41 \
-  E777299FC265DD04793070EB944D35F9AC3DB76A \
-  71A3B16735405025D447E8F274810B012346C9A6 \
-  D1DBF2C4B96F2DEBF4C16654410108112E7EA81F \
-  6B002C6EA3F91B1B0DF0C9BC8F617F1200A6D25C \
-  133EAC179436F14A5CF1B794860FEB804E669320 \
-  F4FC70F07310028424EFC20A8E4256593F177720 \
-  67AA5B46E7AF78053167FE343B8F814A784218F8 \
-  6A8F9C266528E25AEB1D7731C2371D91CB716EA7 \
-  9EDAFF80E080659604F4A76B2EBB056FD847F8A7 \
-  ED9BDF7AD6A55E232E84524257FF9BDBCC301009 \
-  287AE4CA1187C68C08B49CB2D11BD4F33F1DB499 \
-  C388F6961FB972A95678E327F62711DBDCA8AE56 \
-  ; do \
-  gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "$key" || \
-  gpg --batch --keyserver keys.openpgp.org --recv-keys "$key" || \
-  gpg --batch --keyserver keyserver.pgp.com --recv-keys "$key" || \
-  gpg --batch --keyserver ha.pool.sks-keyservers.net --recv-keys "$key" || \
-  gpg --batch --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "$key" ; \
-  done
+RUN wget -O- https://github.com/bitcoin-core/guix.sigs/archive/refs/heads/main.tar.gz | tar -xz -C /tmp \
+  && gpg --import /tmp/guix.sigs-main/builder-keys/*.gpg \
+  && rm -rf /tmp/guix.sigs-main
 
 ENV BITCOIN_VERSION=28.0
 ENV BITCOIN_PREFIX=/opt/bitcoin-${BITCOIN_VERSION}
@@ -70,7 +51,12 @@ ENV BITCOIN_PREFIX=/opt/bitcoin-${BITCOIN_VERSION}
 RUN wget https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS
 RUN wget https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS.asc
 RUN wget https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/bitcoin-${BITCOIN_VERSION}.tar.gz
-RUN gpg --verify SHA256SUMS.asc SHA256SUMS
+RUN set -ex \
+  && { gpg --batch --status-fd 1 --verify SHA256SUMS.asc SHA256SUMS > SHA256SUMS.status || true; } \
+  && if grep -q '^\[GNUPG:\] BADSIG ' SHA256SUMS.status; then echo 'SHA256SUMS has a bad signature' >&2; exit 1; fi \
+  && GOOD_SIGNATURES=$(grep -cE '^\[GNUPG:\] (GOODSIG|EXPKEYSIG) ' SHA256SUMS.status || true) \
+  && echo "SHA256SUMS has ${GOOD_SIGNATURES} good signatures, at least 5 required" \
+  && [ "${GOOD_SIGNATURES}" -ge 5 ]
 RUN grep " bitcoin-${BITCOIN_VERSION}.tar.gz\$" SHA256SUMS | sha256sum -c -
 RUN tar -xzf *.tar.gz
 
