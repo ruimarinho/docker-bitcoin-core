@@ -71,6 +71,14 @@ You can also mount a directory in a volume under `/home/bitcoin/.bitcoin` in cas
   -regtest=1
 ```
 
+The data directory is only accessible by its owner (mode `700`), as it holds the wallet and the RPC cookie. To access it as your host user, run the container with your own UID and GID (see [Using a custom user id (UID) and group id (GID)](#using-a-custom-user-id-uid-and-group-id-gid)):
+
+```sh
+❯ docker run -e UID=$(id -u) -e GID=$(id -g) -v ${PWD}/data:/home/bitcoin/.bitcoin -it --rm ruimarinho/bitcoin-core \
+  -printtoconsole \
+  -regtest=1
+```
+
 You can optionally create a service using `docker-compose`:
 
 ```yml
@@ -85,7 +93,7 @@ bitcoin-core:
 
 By default, images are created with a `bitcoin` user/group using a static UID/GID (`101:101` on Debian and `100:101` on Alpine). You may customize the user and group ids using the build arguments `UID` (`--build-arg UID=<uid>`) and `GID` (`--build-arg GID=<gid>`).
 
-If you'd like to use the pre-built images, uou can also customize the UID/GID on runtime via environment variables `$UID` and `$GID`:
+If you'd like to use the pre-built images, you can also customize the UID/GID on runtime via environment variables `$UID` and `$GID`:
 
 ```sh
 ❯ docker run -e UID=10000 -e GID=10000 -it --rm ruimarinho/bitcoin-core \
